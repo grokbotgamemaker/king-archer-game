@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>King Archer</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="King Archer"><meta name="theme-color" content="#2d5a27"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#2d5a27;touch-action:none;user-select:none;-webkit-user-select:none;font-family:sans-serif}
+canvas{display:block;touch-action:none}
+#ui{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.75);color:#fff;text-align:center;overflow-y:auto;padding:16px;box-sizing:border-box}
+#ui h1{margin:6px;font-size:30px}#ui p{margin:4px}
+.b{display:block;width:88%;max-width:380px;margin:6px auto;padding:13px;font-size:17px;border:0;border-radius:12px;background:#f0b429;color:#222;font-weight:bold}
+.b:disabled{opacity:.4}.go{background:#4caf50;color:#fff}</style></head><body>
+<canvas id="c"></canvas><div id="ui"></div>
+<script>
+const C=document.getElementById('c'),X=C.getContext('2d'),UI=document.getElementById('ui');
+let W,H,D;function rs(){D=window.devicePixelRatio||1;W=innerWidth;H=innerHeight;C.width=W*D;C.height=H*D;C.style.width=W+'px';C.style.height=H+'px';X.setTransform(D,0,0,D,0,0)}
+addEventListener('resize',rs);rs();
+['touchmove','gesturestart','dblclick'].forEach(e=>document.addEventListener(e,ev=>{if(ev.target===C||e!=='touchmove')ev.preventDefault()},{passive:false}));
+let best=+(localStorage.getItem('kaBest')||0),st,state='menu';
+const keys={};addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
+let joy=null;
+C.addEventListener('pointerdown',e=>{joy={id:e.pointerId,sx:e.clientX,sy:e.clientY,x:e.clientX,y:e.clientY}});
+C.addEventListener('pointermove',e=>{if(joy&&joy.id===e.pointerId){joy.x=e.clientX;joy.y=e.clientY}});
+['pointerup','pointercancel'].forEach(t=>C.addEventListener(t,e=>{if(joy&&joy.id===e.pointerId)joy=null}));
+function newGame(){st={wave:0,gold:0,k:{x:W/2,y:H/2+80,hp:100,mhp:100,cd:0},base:{hp:300,mhp:300},dmg:10,rate:1.6,multi:1,spd:170,
+towers:[],en:[],ar:[],coins:[],pt:[],spawnLeft:0,spawnT:0};nextWave()}
+function nextWave(){st.wave++;st.spawnLeft=6+st.wave*3;st.spawnT=0;st.boss=st.wave%5===0;state='play';UI.style.display='none'}
+function spawn(boss){const s=Math.random()*4|0,r=Math.random();let x=s==0?r*W:s==1?W+20:s==2?r*W:-20,y=s==0?-20:s==1?r*H:s==2?H+20:r*H;
+const w=st.wave,hp=boss?400+w*120:15+w*7;st.en.push({x,y,hp,mhp:hp,sp:boss?35:45+Math.random()*25+w*1.5,r:boss?26:11,boss,dmg:boss?40:8,ac:0})}
+const near=(x,y)=>{let b=null,bd=1e9;for(const e of st.en){const d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;b=e}}return[b,bd]};
+function shoot(x,y,t,dmg,n){const a=Math.atan2(t.y-y,t.x-x);for(let i=0;i<n;i++){const o=(i-(n-1)/2)*.15;st.ar.push({x,y,vx:Math.cos(a+o)*480,vy:Math.sin(a+o)*480,dmg,l:1.2})}}
+function burst(x,y,c,n=6){for(let i=0;i<n;i++)st.pt.push({x,y,vx:(Math.random()-.5)*200,vy:(Math.random()-.5)*200,l:.4,c})}
+function upd(dt){const k=st.k,bx=W/2,by=H/2;let mx=0,my=0;
+if(joy){mx=joy.x-joy.sx;my=joy.y-joy.sy;const m=Math.hypot(mx,my);if(m>8){mx/=Math.max(m,50);my/=Math.max(m,50)}else mx=my=0}
+mx+=(keys.d?1:0)-(keys.a?1:0);my+=(keys.s?1:0)-(keys.w?1:0);const m=Math.hypot(mx,my);if(m>1){mx/=m;my/=m}
+k.x=Math.max(12,Math.min(W-12,k.x+mx*st.spd*dt));k.y=Math.max(12,Math.min(H-12,k.y+my*st.spd*dt));if(mx)k.f=mx<0?-1:1;
+if(st.spawnLeft>0){st.spawnT-=dt;if(st.spawnT<=0){st.spawnLeft--;spawn(false);st.spawnT=Math.max(.25,1.1-st.wave*.05)}}
+if(st.boss&&st.spawnLeft===0){spawn(true);st.boss=false}
+k.cd-=dt;if(k.cd<=0){const[t,d]=near(k.x,k.y);if(t&&d<260){shoot(k.x,k.y,t,st.dmg,st.multi);k.cd=1/st.rate}}
+st.towers.forEach(t=>{t.cd-=dt;if(t.cd<=0){const[e,d]=near(t.x,t.y);if(e&&d<200+t.lv*20){shoot(t.x,t.y,e,6+t.lv*5,1);t.cd=1.2/(1+t.lv*.3)}}});
+st.ar=st.ar.filter(a=>{a.x+=a.vx*dt;a.y+=a.vy*dt;a.l-=dt;for(const e of st.en)if(e.hp>0&&Math.hypot(e.x-a.x,e.y-a.y)<e.r+4){e.hp-=a.dmg;burst(a.x,a.y,'#fff',3);return false}return a.l>0});
+for(const e of st.en){if(e.hp<=0)continue;const dk=Math.hypot(k.x-e.x,k.y-e.y),chase=dk<120&&!e.boss,tx=chase?k.x:bx,ty=chase?k.y:by,d=Math.hypot(tx-e.x,ty-e.y);
+e.ac-=dt;if(d>e.r+(chase?12:30)){e.x+=(tx-e.x)/d*e.sp*dt;e.y+=(ty-e.y)/d*e.sp*dt}else if(e.ac<=0){e.ac=1;if(chase)k.hp-=e.dmg;else st.base.hp-=e.dmg;burst(e.x,e.y,'#f44',5)}}
+st.en=st.en.filter(e=>{if(e.hp<=0){burst(e.x,e.y,e.boss?'#fd0':'#a33',e.boss?30:10);const n=e.boss?15:1+(Math.random()<.3);for(let i=0;i<n;i++)st.coins.push({x:e.x+(Math.random()-.5)*(e.boss?60:10),y:e.y+(Math.random()-.5)*(e.boss?60:10),v:e.boss?5:2+(st.wave/4|0)});return false}return true});
+st.coins=st.coins.filter(c=>{const d=Math.hypot(c.x-k.x,c.y-k.y);if(d<90){c.x+=(k.x-c.x)/d*300*dt;c.y+=(k.y-c.y)/d*300*dt}if(d<18){st.gold+=c.v;return false}return true});
+st.pt=st.pt.filter(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.l-=dt;return p.l>0});
+if(k.hp<=0||st.base.hp<=0){over();return}
+if(st.spawnLeft===0&&!st.boss&&st.en.length===0){st.gold+=st.coins.reduce((s,c)=>s+c.v,0);st.coins=[];k.hp=k.mhp;shop()}}
+function bar(x,y,w,f,c){X.fillStyle='#000';X.fillRect(x-w/2,y,w,5);X.fillStyle=c;X.fillRect(x-w/2,y,w*Math.max(0,f),5)}
+function emo(s,x,y,sz,flip){X.save();X.translate(x,y);if(flip)X.scale(-1,1);X.font=sz+'px sans-serif';X.textAlign='center';X.textBaseline='middle';X.fillText(s,0,0);X.restore()}
+function draw(){X.fillStyle='#3d7a34';X.fillRect(0,0,W,H);if(!st)return;const bx=W/2,by=H/2;
+X.fillStyle='#8b6b3d';X.beginPath();X.arc(bx,by,40,0,7);X.fill();emo('🏰',bx,by,52);bar(bx,by+34,70,st.base.hp/st.base.mhp,'#4af');
+st.towers.forEach(t=>{emo('🗼',t.x,t.y,28);X.fillStyle='#fff';X.font='bold 11px sans-serif';X.fillText(t.lv,t.x+12,t.y+12)});
+st.coins.forEach(c=>emo('🪙',c.x,c.y,14));
+st.en.forEach(e=>{emo(e.boss?'👹':'👺',e.x,e.y,e.r*2);bar(e.x,e.y-e.r-7,e.r*2,e.hp/e.mhp,'#f33')});
+X.strokeStyle='#fff';X.lineWidth=2;st.ar.forEach(a=>{const m=Math.hypot(a.vx,a.vy);X.beginPath();X.moveTo(a.x,a.y);X.lineTo(a.x-a.vx/m*10,a.y-a.vy/m*10);X.stroke()});
+const k=st.k;emo('🐎',k.x,k.y+4,30,k.f!==-1);emo('👑',k.x,k.y-14,16);bar(k.x,k.y+20,30,k.hp/k.mhp,'#4f4');
+st.pt.forEach(p=>{X.fillStyle=p.c;X.globalAlpha=p.l/.4;X.fillRect(p.x-2,p.y-2,4,4)});X.globalAlpha=1;
+if(joy){X.strokeStyle='rgba(255,255,255,.5)';X.beginPath();X.arc(joy.sx,joy.sy,50,0,7);X.stroke();X.fillStyle='rgba(255,255,255,.4)';X.beginPath();const dx=joy.x-joy.sx,dy=joy.y-joy.sy,m=Math.min(50,Math.hypot(dx,dy))/(Math.hypot(dx,dy)||1);X.arc(joy.sx+dx*m,joy.sy+dy*m,22,0,7);X.fill()}
+X.fillStyle='#fff';X.font='bold 18px sans-serif';X.textAlign='left';X.textBaseline='top';X.fillText('Wave '+st.wave+(st.wave%5===0?' 👹BOSS':''),10,12);X.textAlign='right';X.fillText('🪙 '+st.gold,W-10,12)}
+function shop(){state='shop';const s=st,c={dmg:20+s.dmg*2,rate:Math.round(25*s.rate),multi:80*s.multi*s.multi,spd:(s.spd-140)*1,hp:s.k.mhp/2,rep:40,tw:60+s.towers.length*50};
+const tl=Math.min(...s.towers.map(t=>t.lv).concat(99)),tu=tl<99?40+tl*40:0;
+const btn=(id,t,cost,dis)=>`<button class="b" data-id="${id}" data-c="${cost}" ${s.gold<cost||dis?'disabled':''}>${t} — 🪙${cost}</button>`;
+UI.innerHTML=`<h1>Wave ${s.wave} cleared!</h1><p>🪙 ${s.gold} · Base ${Math.ceil(s.base.hp)}/${s.base.mhp}</p>`+
+btn('dmg','🏹 Arrow damage ('+s.dmg+')',c.dmg)+btn('rate','⚡ Fire rate ('+s.rate.toFixed(1)+'/s)',c.rate)+btn('multi','🎯 Multi-shot ('+s.multi+')',c.multi,s.multi>=7)+
+btn('spd','🐎 Horse speed',c.spd)+btn('hp','❤️ King HP ('+s.k.mhp+')',c.hp)+btn('rep','🔧 Repair base +100',c.rep,s.base.hp>=s.base.mhp)+
+btn('tw','🗼 Build tower ('+s.towers.length+'/8)',c.tw,s.towers.length>=8)+(s.towers.length?btn('tu','⬆️ Upgrade weakest tower (lv '+tl+')',tu,tl>=10):'')+
+`<button class="b go" data-id="go">▶ Next wave ${s.wave+1}${(s.wave+1)%5===0?' (BOSS!)':''}</button>`;UI.style.display='flex'}
+UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const id=b.dataset.id,s=st;
+if(id==='start'){newGame();return}if(id==='go'){nextWave();return}s.gold-=+b.dataset.c;
+if(id==='dmg')s.dmg+=5;if(id==='rate')s.rate+=.3;if(id==='multi')s.multi++;if(id==='spd')s.spd+=20;if(id==='hp'){s.k.mhp+=25;s.k.hp=s.k.mhp}
+if(id==='rep')s.base.hp=Math.min(s.base.mhp,s.base.hp+100);if(id==='tw'){const a=s.towers.length*Math.PI/4;s.towers.push({x:W/2+Math.cos(a)*75,y:H/2+Math.sin(a)*75,lv:1,cd:0})}
+if(id==='tu'){const t=s.towers.reduce((a,b)=>a.lv<=b.lv?a:b);t.lv++}shop()});
+function over(){state='over';if(st.wave>best){best=st.wave;localStorage.setItem('kaBest',best)}
+UI.innerHTML=`<h1>${st.k.hp<=0?'The King has fallen!':'The castle fell!'}</h1><p>Reached wave ${st.wave}</p><p>🏆 Best: wave ${best}</p><button class="b go" data-id="start">↻ Play again</button>`;UI.style.display='flex'}
+function menu(){UI.innerHTML=`<h1>👑 King Archer 🏹</h1><p>Drag anywhere to ride.<br>Your king shoots automatically.<br>Protect the castle & grab the gold!</p><p>🏆 Best: wave ${best}</p><button class="b go" data-id="start">▶ Start</button>`;UI.style.display='flex'}
+let lt=performance.now();function loop(t){const dt=Math.min(.05,(t-lt)/1000);lt=t;if(state==='play')upd(dt);draw();requestAnimationFrame(loop)}
+menu();requestAnimationFrame(loop);
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
