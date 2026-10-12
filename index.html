@@ -58,14 +58,16 @@ if(o.vib){const l=c.createOscillator(),lg2=c.createGain();l.frequency.value=5.2;
 const a=o.a||.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+dur);os.connect(g);
 if(o.lp){const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=o.lp;g.connect(fl);fl.connect(dest);if(o.rev)fl.connect(this.rev)}else{g.connect(dest);if(o.rev)g.connect(this.rev)}os.start(t);os.stop(t+dur+.05)},
 noise(t,dur,vol,ff,dest,type='bandpass'){const c=this.ctx,n=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();n.buffer=this.nb;f.type=type;f.frequency.value=ff;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);n.connect(f);f.connect(g);g.connect(dest);n.start(t);n.stop(t+dur+.02)},
-sched(){const c=this.ctx;if(!c||c.state!=='running')return;if(this.nt<c.currentTime)this.nt=c.currentTime+.05;const E8=60/96/2,SC=[0,2,3,5,7,9,10],D4=293.66,hz=(deg,oct=0)=>D4*Math.pow(2,(SC[((deg%7)+7)%7]+12*(Math.floor(deg/7)+oct))/12),PROG=[0,-1,3,0,5,3,-1,0];
-while(this.nt<c.currentTime+.3){const t=this.nt,st8=this.step%16,bar=Math.floor(this.step/16),root=PROG[bar%8];
-if(this.cfg.m){if(st8===0){this.tone('triangle',hz(root,-2),t,E8*16,.07,this.mg,{a:.4,lp:600});this.tone('sine',hz(root+4,-2),t,E8*16,.035,this.mg,{a:.6});}
-if(st8%4===0)this.tone('triangle',hz(root+(st8%8?4:0),-1),t,E8*3,.06,this.mg,{lp:1400});
-const flute=(bar%4)>=2;if(!flute&&Math.random()<.62){this.mel+=[-2,-1,-1,1,1,2,0][(Math.random()*7)|0];if(this.mel<0)this.mel=1;if(this.mel>11)this.mel=9;if(st8%4===0)this.mel+=((root-this.mel)%7===0?0:0);
-this.tone('triangle',hz(this.mel),t,.45,.075,this.mg,{lp:2600,rev:1});this.tone('square',hz(this.mel,1),t,.12,.008,this.mg,{lp:3000})}
-if(flute&&st8%2===0&&Math.random()<.75){this.mel+=[-1,1,1,-1,2,-2][(Math.random()*6)|0];this.mel=Math.max(2,Math.min(11,this.mel));this.tone('sine',hz(this.mel,1),t,E8*2.2,.05,this.mg,{a:.06,vib:1,rev:1})}
-if(st8%4===2)this.noise(t,.06,.03,7000,this.mg,'highpass')}
+sched(){const c=this.ctx;if(!c||c.state!=='running')return;if(this.nt<c.currentTime)this.nt=c.currentTime+.05;const E8=.2,m=this.mg,C2=65.41,hz=(base,semi)=>base*Math.pow(2,semi/12);
+const ROOT=[0,0,-4,-2,0,5,7,0],MAJ=[0,0,1,1,0,0,1,0],MEL=[[[0,3,7],[3,2,8],[5,1,7]],[[0,2,3],[2,1,5],[3,3,7]],[[0,3,8],[3,2,12],[5,1,10]],[[0,4,10],[4,2,7]],[[0,2,12],[2,1,10],[3,2,8],[5,1,7]],[[0,3,5],[3,3,8]],[[0,2,7],[2,1,11],[3,3,14]],[[0,6,12]]];
+while(this.nt<c.currentTime+.3){const t=this.nt,e=this.step%6,barN=Math.floor(this.step/6),bar=barN%8,cyc=Math.floor(barN/8)%6,lvl=Math.min(3,cyc),r=ROOT[bar],third=MAJ[bar]?4:3;
+if(this.cfg.m){
+if(e===0){this.tone('sawtooth',hz(C2,r),t,E8*6.2,.035,m,{a:.3,lp:260});this.tone('sine',hz(C2,r-12),t,E8*6.2,.06,m,{a:.2})}
+const os=[0,7,12,7,third,7][e];this.tone('sawtooth',hz(C2*2,r+os),t,E8*.9,.045+.01*lvl,m,{lp:700+lvl*250,a:.01});
+const boom=(v)=>{this.tone('sine',95,t,.45,v,m,{slide:42,a:.003});this.noise(t,.18,v*.6,180,m,'lowpass')};
+if(e===0)boom(.32);if(e===3)boom(lvl>=1?.22:.14);if(lvl>=2&&(e===5||(bar%2&&e===4)))boom(.12);if(lvl>=3&&bar===7&&e>=3)boom(.1);
+if(lvl>=2&&(e===1||e===4))this.noise(t,.05,.035,5000,m,'highpass');
+if(lvl>=1)for(const [st0,du,se] of MEL[bar])if(st0===e){const f=hz(261.63,se-(lvl>=3?0:12)),d=du*E8*1.05;this.tone('sawtooth',f,t,d,.05,m,{a:.07,lp:1500,vib:1,rev:1});this.tone('sawtooth',f*1.004,t,d,.03,m,{a:.09,lp:1100,vib:1});if(lvl>=3)this.tone('sawtooth',f/2,t,d,.025,m,{a:.08,lp:900})}}
 this.nt+=E8;this.step++}},
 sfx(n){if(!this.ctx||!this.cfg.s||this.ctx.state!=='running')return;const now=this.ctx.currentTime,thr={shot:.07,hit:.05,coin:.035,gate:.15,death:.03}[n]||0;if(thr&&now-(this.last[n]||0)<thr)return;this.last[n]=now;const t=now+.005,d=this.sg;
 switch(n){case'shot':this.noise(t,.07,.12,2400,d);this.tone('triangle',900,t,.06,.05,d,{slide:500});break;
