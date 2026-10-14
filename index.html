@@ -3,8 +3,8 @@
 <title>King Archer</title><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="King Archer"><meta name="theme-color" content="#2d5a27"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><link rel="manifest" href="manifest.json">
 <style>
 :root{--f:ui-rounded,"Arial Rounded MT Bold","Varela Round","Nunito",system-ui,-apple-system,sans-serif}
-html,body{margin:0;height:100%;overflow:hidden;background:#1d3a17;touch-action:none;user-select:none;-webkit-user-select:none;font-family:var(--f)}
-canvas{display:block;touch-action:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#0f1d0c;touch-action:none;user-select:none;-webkit-user-select:none;font-family:var(--f)}
+canvas{display:block;touch-action:none;position:fixed;left:0;top:0}html,body{height:100%;height:100dvh;min-height:-webkit-fill-available}
 #ui{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(120,60,200,.45),rgba(30,0,60,.85));color:#fff;padding:14px;box-sizing:border-box;overflow-y:auto;touch-action:pan-y}
 .pn{width:100%;max-width:420px;background:linear-gradient(#9b5cff,#5b22c9 60%,#3d1494);border:4px solid #fff;border-radius:28px;box-shadow:0 0 0 4px #3a1278,0 14px 40px #000a,inset 0 6px 0 #ffffff44,inset 0 -6px 0 #0003;padding:18px 16px;text-align:center;max-height:94vh;overflow-y:auto;box-sizing:border-box}
 h1{margin:4px 0 8px;font-size:34px;letter-spacing:1px;background:linear-gradient(#fff6b0,#ffc22a 55%,#d48a00);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 #7a2a00) drop-shadow(0 0 2px #fff)}h1{font-weight:900}
@@ -51,11 +51,13 @@ const FONT2=0,WW=520,WH=1170,CX=260,WALLY=930,GW=13,SIDE=36,CASTLE_Y=1122,TAU=Ma
 const R=Math.random,rnd=(a,b)=>a+R()*(b-a),dist=(a,b,c,d)=>Math.hypot(a-c,b-d),angD=(a,b)=>((a-b+3*Math.PI)%TAU+TAU)%TAU-Math.PI;
 let W,H,D,Z,RES,cache={},vig;
 let SAB=0,SAL=0;function safe(){const d=document.createElement('div');d.style.cssText='position:fixed;padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);visibility:hidden';document.body.appendChild(d);const cs=getComputedStyle(d);SAB=parseFloat(cs.paddingBottom)||0;SAL=parseFloat(cs.paddingLeft)||0;d.remove()}
-function rs(){if(document.body)safe();D=Math.min(3,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;C.width=W*D;C.height=H*D;C.style.width=W+'px';C.style.height=H+'px';Z=Math.max(1.6,Math.min(4,Math.min(W,H)/180));
+function rs(){if(document.body)safe();D=Math.min(3,window.devicePixelRatio||1);{const vv=window.visualViewport,de=document.documentElement;W=Math.round(Math.max(innerWidth||0,de.clientWidth||0)||(vv?vv.width:0)||360);H=Math.round(Math.max(innerHeight||0,de.clientHeight||0,vv?vv.height:0)||640)}_lw=W;_lh=H;C.width=W*D;C.height=H*D;C.style.width=W+'px';C.style.height=H+'px';Z=Math.max(1.6,Math.min(4,Math.min(W,H)/180));
 const nr=Math.min(7,Math.ceil(Z*D));if(nr!==RES){RES=nr;cache={}}
 vig=document.createElement('canvas');vig.width=W;vig.height=H;const g=vig.getContext('2d');let gr=g.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,'rgba(6,4,0,.62)');g.fillStyle=gr;g.fillRect(0,0,W,H);
 gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,'rgba(255,214,140,.16)');gr.addColorStop(.45,'rgba(255,214,140,0)');gr.addColorStop(1,'rgba(10,14,30,.28)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
-addEventListener('resize',rs);rs();
+let _lw=0,_lh=0,_rsT=0;function rsChk(){const vv=window.visualViewport,de=document.documentElement;const w=Math.round(Math.max(innerWidth||0,de.clientWidth||0)),h=Math.round(Math.max(innerHeight||0,de.clientHeight||0,vv?vv.height:0));if(w!==_lw||h!==_lh||C.width!==Math.round(w*Math.min(3,window.devicePixelRatio||1)))rs()}
+function rsKick(){clearTimeout(_rsT);_rsT=setTimeout(rsChk,60);[100,500,1000].forEach(t=>setTimeout(rsChk,t))}
+['resize','orientationchange','pageshow','focus'].forEach(ev=>addEventListener(ev,rsKick));document.addEventListener('visibilitychange',()=>{if(!document.hidden)rsKick()});if(window.visualViewport){visualViewport.addEventListener('resize',rsKick)}setInterval(()=>{if(!document.hidden)rsChk()},1500);rs();
 document.addEventListener('touchmove',e=>{if(!e.target.closest('#ui'))e.preventDefault()},{passive:false});
 ['gesturestart','dblclick'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 // ---------- meta
