@@ -1150,6 +1150,52 @@ setInterval(()=>{if(PIP.on&&(document.hidden||performance.now()-lt>120)){const t
 let gNx=0;function loop(t){{const _f=GF().fps;if(_f){if(t<gNx-1.5){requestAnimationFrame(loop);return}gNx+=1000/_f;if(gNx<t-1000/_f)gNx=t}}const dt=Math.min(.05,(t-lt)/1000);lt=t;fpsN++;if(t-fpsT>=1000){fpsV=Math.round(fpsN*1000/(t-fpsT));fpsN=0;fpsT=t}frame(dt);if(st)draw();else{(UPR=0,X.setTransform(D,0,0,D,0,0));X.fillStyle='#1d3a17';X.fillRect(0,0,W,H)}requestAnimationFrame(loop)}
 (function mig(){try{if(localStorage.getItem('kaMeta')&&!localStorage.getItem('kaMig')){const L=k=>localStorage.getItem(k);localStorage.setItem('s1_kaMeta',L('kaMeta'));const bc=L('kaBestC')!=null?L('kaBestC'):String(Math.max(0,(+(L('kaBest')||0))-1));localStorage.setItem('s1_kaBestC',bc);['kaFav','kaBsec','kaHS'].forEach(k=>{if(L(k)!=null)localStorage.setItem('s1_'+k,L(k))});localStorage.setItem('s1_info',JSON.stringify({mig:1,created:Date.now(),last:Date.now()}));localStorage.setItem('kaMig','1')}}catch(e){}})();
 (function(){const P=CanvasRenderingContext2D.prototype,sb=Object.getOwnPropertyDescriptor(P,'shadowBlur'),fl=Object.getOwnPropertyDescriptor(P,'filter');try{Object.defineProperty(X,'shadowBlur',{get(){return sb.get.call(this)},set(v){sb.set.call(this,v*GF().gl)}});if(fl)Object.defineProperty(X,'filter',{get(){return fl.get.call(this)},set(v){fl.set.call(this,GF().gl<1&&/blur/.test(v)?'none':v)}})}catch(e){}})();
+// ---------- Progress hub (v18.38): trusted clock, achievements & titles, offline treasury
+const TC={off:null,pa:0,sync:false,s0:performance.now(),
+ async sync_(){for(const u of ['./?tc='+Date.now(),'https://api.github.com/']){try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),5000),p0=performance.now(),r=await fetch(u,{method:'HEAD',cache:'no-store',signal:c.signal});clearTimeout(tm);const d=Date.parse(r.headers.get('date')||'');if(!isNaN(d)){const p1=performance.now();this.off=d+500-(p0+p1)/2;this.sync=true;if(meta&&SLOT){PG.hw();saveMeta()}if(state==='menu'&&!tset&&PG.onMenu)menu();return true}}catch(e){}}return false},
+ // trusted ms: server time + monotonic perf delta; if never synced, the slot's high-water mark + session time only
+ now(){if(this.sync)return this.off+performance.now();const h=(meta&&meta.tc&&meta.tc.hw)||0;return h?h+(performance.now()-this.s0):0}};
+TC.sync_();document.addEventListener('visibilitychange',()=>{if(!document.hidden)TC.sync_()});
+const PG={onMenu:false,sec:null,
+ hw(){meta.tc=meta.tc||{};const n=TC.now();if(n&&n>(meta.tc.hw||0))meta.tc.hw=n;return meta.tc.hw||0},
+ // ---- treasury: hourly = 15% of estimated active gems/hour at best wave
+ actHr(){const b=Math.max(best,1);return GW_(b)*80*1.25*(1+ml('gm')/100)},
+ trHr(){return best<10?0:Math.round(this.actHr()*.15)},
+ trState(){meta.tr=meta.tr||{};const T=meta.tr;const n=TC.sync?TC.now():0;if(!T.t){if(n){T.t=n;saveMeta()}return{g:0,h:0,ok:!!n}}if(!n)return{g:0,h:Math.min(24,Math.max(0,((meta.tc&&meta.tc.hw||T.t)-T.t)/36e5)),ok:false};const hw=Math.max(meta.tc&&meta.tc.hw||0,T.t);const h=Math.min(24,Math.max(0,(n-T.t)/36e5));return{g:Math.floor(h*this.trHr()),h,ok:true,back:n<hw-6e4}},
+ trCollect(){const s=this.trState();if(!s.ok){toast('Needs internet time to collect',false);return}const n=TC.now();if(s.g>0){meta.gems+=s.g;meta.tg=(meta.tg||0)+s.g;meta.trT=(meta.trT||0)+s.g}meta.tr.t=n;this.hw();saveMeta();toast(s.g>0?'💰 +'+fN(s.g)+' gems collected':'Treasury is empty',s.g>0)},
+ // ---- achievements
+ A:null,mkA(){const L=()=>meta.ls||{},bk=t=>(meta.bst&&meta.bst[t]&&meta.bst[t].kills)||0,a=[],W=[10,25,50,100,150,200,250,300,400,500,750,1000],WT={50:'Gatekeeper',100:'Centurion',250:'Warlord',500:'Mob Slayer',1000:'Eternal King'};
+  W.forEach((w,i)=>a.push({id:'w'+w,ic:'🏆',n:'Wave '+w,d:'Complete wave '+w,v:()=>best,g:w,r:Math.round(10+w*.6),ti:WT[w]}));
+  [[1e3,'Skirmisher'],[1e4,'Slayer'],[1e5,'Butcher'],[1e6,'Reaper'],[1e7,null]].forEach(([n,t],i)=>a.push({id:'k'+n,ic:'💀',n:fN(n)+' Kills',d:'Slay '+fN(n)+' enemies (lifetime)',v:()=>meta.tk||0,g:n,r:20+i*40,ti:t}));
+  [[10,'Bossbane'],[100,null],[500,'Titan Hunter'],[2000,null]].forEach(([n,t],i)=>a.push({id:'b'+n,ic:'☠️',n:n+' Bosses',d:'Slay '+n+' bosses (lifetime)',v:()=>L().boss||0,g:n,r:25+i*50,ti:t}));
+  ['boss',...UB].forEach(t=>a.push({id:'u'+t,ic:'⚔️',n:ENAME[t]+' Slain',d:'Defeat the '+ENAME[t],v:()=>bk(t),g:1,r:30}));
+  a.push({id:'uall',ic:'👹',n:'Bane of All Races',d:'Defeat all 10 bosses',v:()=>['boss',...UB].filter(t=>bk(t)>0).length,g:10,r:150,ti:'Bane of Races'});
+  [[5,null],[25,'Veteran'],[100,'Relentless'],[500,null]].forEach(([n,t],i)=>a.push({id:'r'+n,ic:'🔁',n:n+' Runs',d:'Finish '+n+' runs',v:()=>meta.runs||0,g:n,r:15+i*30,ti:t}));
+  [[1e3,null],[1e4,'Treasurer'],[1e5,'Gem Baron'],[1e6,'Dragon Hoard']].forEach(([n,t],i)=>a.push({id:'g'+n,ic:'💎',n:fN(n)+' Gems Earned',d:'Earn '+fN(n)+' gems (lifetime)',v:()=>meta.tg||0,g:n,r:20+i*40,ti:t}));
+  [[100,null],[1000,'Architect'],[5000,null]].forEach(([n,t],i)=>a.push({id:'p'+n,ic:'🔨',n:n+' Upgrades',d:'Buy '+n+' pad upgrades in runs',v:()=>L().ups||0,g:n,r:15+i*30,ti:t}));
+  [[1e5,null],[1e7,'Sharpshooter']].forEach(([n,t],i)=>a.push({id:'a'+n,ic:'🏹',n:fN(n)+' Arrows',d:'Fire '+fN(n)+' arrows',v:()=>L().arrows||0,g:n,r:20+i*40,ti:t}));
+  a.push({id:'c1e4',ic:'💥',n:'Critical Mass',d:'Land 10K critical hits',v:()=>L().crit||0,g:1e4,r:40});
+  [[10,'Relic Keeper'],[35,'Artifact Lord']].forEach(([n,t])=>a.push({id:'f'+n,ic:'🏺',n:n+' Artifact Upgrades',d:'Reach '+n+' of 35 artifact upgrades',v:()=>ARTS.reduce((s,x)=>s+Math.min(5,aS(x[0])),0),g:n,r:n*4,ti:t}));
+  [[3600,null],[36000,'Stalwart']].forEach(([n,t],i)=>a.push({id:'t'+n,ic:'⏳',n:(n/3600)+'h Played',d:'Spend '+(n/3600)+' hours of game time in battle',v:()=>L().time||0,g:n,r:20+i*40,ti:t}));
+  a.push({id:'tr1',ic:'💰',n:'Royal Collector',d:'Collect 1K gems from the Offline Treasury',v:()=>meta.trT||0,g:1e3,r:30,ti:'Tax Collector'});
+  return this.A=a},
+ check(quiet){if(!meta||!SLOT)return 0;const A=this.A||this.mkA();meta.ach=meta.ach||{};let n=0,g=0;const first=!meta.achI;for(const a of A){if(meta.ach[a.id])continue;let v=0;try{v=a.v()}catch(e){}if(v>=a.g){meta.ach[a.id]=1;meta.gems+=a.r;g+=a.r;n++}}if(first)meta.achI=1;if(n){saveMeta();if(!quiet)setTimeout(()=>toast('🏅 '+(n>1?n+' achievements':'Achievement')+' unlocked! +'+fN(g)+' 💎'),300)}return n},
+ titles(){return (this.A||this.mkA()).filter(a=>a.ti&&meta.ach&&meta.ach[a.id]).map(a=>a.ti)},
+ accH(id,label,html){return`<button class="tab" data-pgsec="${id}" style="width:100%;text-align:left;margin:6px 0">${this.sec===id?'▼':'▶'} ${label}</button>`+(this.sec===id?html:'')},
+ hub(){this.onMenu=false;state='menu';tset=false;saveMeta();loadMeta();this.check(true);this.hw();saveMeta();const A=this.A||this.mkA(),got=A.filter(a=>meta.ach&&meta.ach[a.id]).length,T=this.trState(),tl=this.titles();
+  const trH=`<div class="row"><div class="ic">💰</div><div class="tx"><b>Offline Treasury</b><small>Fills at 💎 ${fN(this.trHr())}/hour while you're away (based on best wave ${best}), up to 24 hours.</small><div class="pbar"><i style="width:${T.h/24*100}%"></i></div><small>${T.ok?T.h.toFixed(1)+' / 24 h stored':'Waiting for internet time…'}</small></div><button class="buy" data-id="pgTr" ${T.ok&&T.g>0?'':'disabled'}>💎 ${fN(T.g)}</button></div>`;
+  const grp={};A.forEach(a=>{(grp[a.ic]=grp[a.ic]||[]).push(a)});
+  const aH=Object.values(grp).map(g=>g.map(a=>{const d=meta.ach&&meta.ach[a.id];let v=0;try{v=a.v()}catch(e){}const p=Math.min(1,v/a.g);return`<div class="row" style="${d?'':'opacity:.8'}"><div class="ic" style="${d?'':'filter:grayscale(1)'}">${d?a.ic:'🔒'}</div><div class="tx"><b>${a.n}${d?' ✓':''}</b><small>${a.d}${a.ti?' · Title: <b style="color:#ffd54f">'+a.ti+'</b>':''}</small>${d?'':`<div class="pbar"><i style="width:${p*100}%"></i></div><small>${fN(Math.floor(v))} / ${fN(a.g)}</small>`}</div><div style="font-weight:900;color:#fff36b;font-size:13px">💎 ${a.r}</div></div>`}).join('')).join('');
+  const tH=`<p style="font-size:13px">Your chosen title shows under the crown on the title screen.</p>`+['',...tl].map(t=>`<button class="b ${(meta.title||'')===t?'g':'n'}" data-pgti="${t}" style="font-size:14px;padding:8px;margin:3px 0">${t||'No title'}</button>`).join('');
+  UI.innerHTML=`<div class="pn"><h1>Progress</h1><div style="position:sticky;top:-18px;z-index:5;margin:0 -16px 6px;padding:8px 0;background:linear-gradient(#3b342c,#26211b);border-bottom:2px solid #c9a14a;border-radius:0 0 8px 8px;box-shadow:0 4px 10px #0008"><div class="gem" style="margin:0">💎 ${fN(meta.gems)}</div><button class="xb" data-id="menu" aria-label="Close">✕</button></div>${this.accH('tr','💰 Offline Treasury'+(T.g>0?' — 💎 '+fN(T.g)+' ready':''),trH)}${this.accH('ach','🏅 Achievements ('+got+'/'+A.length+')',aH)}${this.accH('ti','👑 Titles ('+tl.length+')',tH)}</div>`;UI.style.display='flex'},
+ deco(){this.onMenu=true;if(!SLOT||!meta)return;this.check();this.hw();saveMeta();const pn=UI.querySelector('.pn');if(!pn)return;const h1=pn.querySelector('h1');if(h1&&meta.title){const t=document.createElement('div');t.style.cssText='color:#ffd54f;font-weight:900;letter-spacing:1px;margin:-6px 0 6px';t.textContent='« '+meta.title+' »';h1.after(t)}const ar=pn.querySelector('[data-id="arm"]');if(ar){const T=this.trState(),b=document.createElement('button');b.className='b';b.dataset.id='pgHub';b.style.cssText='background:linear-gradient(#5b7bd6,#22357a);border-color:#9fb8ff';b.textContent='📜 Progress'+(T.g>0?' — 💰 '+fN(T.g)+' ready':'');ar.before(b)}}};
+{const _m=menu;menu=function(){_m();PG.deco()};const _o=over;over=function(){_o();PG.check()};}
+UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const id=b.dataset.id;const keep=()=>{const sc=(wrapUI(),scr()).scrollTop;return()=>{wrapUI();scr().scrollTop=sc}};
+ if(id==='pgHub'){e.stopImmediatePropagation();Snd.init();Snd.ui();PG.hub();wrapUI();return}
+ if(id==='pgTr'){e.stopImmediatePropagation();Snd.ui();PG.trCollect();const r=keep();PG.hub();r();return}
+ if(b.dataset.pgsec){e.stopImmediatePropagation();Snd.ui();PG.sec=PG.sec===b.dataset.pgsec?null:b.dataset.pgsec;PG.hub();wrapUI();return}
+ if(b.dataset.pgti!=null){e.stopImmediatePropagation();Snd.ui();meta.title=b.dataset.pgti;saveMeta();const r=keep();PG.hub();r();return}},true);
+
 slotScreen();requestAnimationFrame(loop);
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script></body></html>
