@@ -1721,7 +1721,7 @@ function trDrawW(){const s=st;if(!s||s.raid||!s.tr)return;const t=s.t,gf=GF();X.
 // new run / load / upgrade hooks
 {const _n=newGame;newGame=function(...a){const r=_n.apply(this,a);if(st){st.tr=null;trS();TRR.sT=12;TRR.sOn=0;TRR.dT=6;TRR.chT=0;TRR.hadCh=0;TRFX.length=0}return r}}
 {const _l=loadRun;loadRun=function(...a){const r=_l.apply(this,a);if(st&&state!=='menu'){trS();trCheck();TRR.sOn=0;TRR.hadCh=st.sol.some(o=>o.ch)?1:0;TRFX.length=0}return r}}
-{const _m=modal;modal=function(){const s=st;if(s&&!s.raid&&state==='play'&&!s.pkPend&&s.spPend){trCheck();if(s.spPend){trUI(s.spPend,1);return}}return _m()}}
+{const _m=modal;modal=function(){const s=st;if(s&&!s.raid&&state==='play'&&!s.pkPend&&s.spPend){trCheck();if(s.spPend){trPop(s.spPend);return}}return _m()}}
 // costs and respec
 function trCost(k,m){const p=st.pads.find(q=>q.kind===k&&!q.hid);return p?Math.round(cost(p)*m):0}
 const trBetween=()=>{const s=st;return !!s&&(s.prep||(s.breakT>0&&!s.en.length&&!s.spawnLeft&&!s.boss))};
@@ -1745,9 +1745,14 @@ function trUI(k,pend){const s=st;if(!s)return;trS();TRU.k=k;if(pend){state='perk
  if(TRU.sw&&TRU.sw.k===k){const a=TRID[t[TRU.sw.i]],b=TRID[TRU.sw.id];foot=`<div style="background:#0006;border-radius:9px;padding:8px;margin-top:6px;font-size:13px">Swap <b>${a?a.n[1]:''}</b> → <b>${b.n[1]}</b> for ${fs?'<b style="color:#69f0ae">FREE</b> (first swap this run)':'🪙 '+fC(sc)}<div style="display:flex;gap:6px;margin-top:6px"><button class="b g" data-trc="1" style="flex:1;padding:7px" ${(fs||s.gold>=sc)&&bw?'':'disabled'}>Confirm</button><button class="b n" data-trx="1" style="flex:1;padding:7px">Cancel</button></div></div>`}
  const info=pi>=0?`<p style="font-size:13px;color:#69f0ae;margin:6px 0">Tier ${pi+1} unlocked: pick one node (free). Mix any branches.</p>`:`<p style="font-size:12px;opacity:.8;margin:6px 0">${bw?`Swap a tier: ${fs?'first swap FREE':'🪙 '+fC(sc)} (50% of next upgrade).`:'Swaps and resets are allowed between waves.'}</p>`;
  const any=t.some(x=>x);
- UI.innerHTML=`<div class="pn" style="max-width:500px;padding:12px 10px"><h1 style="font-size:21px;margin:2px 0 4px">${T.ic} ${T.nm} Tree</h1><div style="font-size:12px;opacity:.92">Lv ${l} · ${ln}${l?` · ${fN(lk)} / hit`:''}</div><div style="display:flex;margin:8px 0 2px">${tabs}</div>${info}${hdr}${rows}${foot}<div style="display:flex;gap:6px;margin-top:8px">${any?`<button class="b n" data-trr="${k}" style="flex:1;padding:8px;font-size:13px" ${bw&&s.gold>=rc?'':'disabled'}>↺ Reset tree · 🪙 ${fC(rc)}</button>`:''}${TRU.from==='pend'&&trPend('tower')<0&&trPend('barracks')<0||TRU.from!=='pend'?`<button class="b g" data-trb="1" style="flex:1;padding:8px;font-size:14px">${TRU.from==='pend'?'▶ Continue':'◀ Back'}</button>`:''}</div></div>`;UI.style.display='flex'}
-function trClose(){const s=st;TRU.sw=null;s.spPend=null;trCheck();if(TRU.from==='pend'){if(s.spPend){trUI(s.spPend,1);return}resume()}else renderMenu()}
-UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!st)return;const D=b.dataset;if(!(D.trn||D.trt||D.trc||D.trx||D.trr||D.trb||D.tro))return;e.stopImmediatePropagation();e.preventDefault();Snd.ui();const s=st;
+ UI.innerHTML=`<div class="pn" style="max-width:500px;padding:12px 10px"><h1 style="font-size:21px;margin:2px 0 4px">${T.ic} ${T.nm} Tree</h1><div style="font-size:12px;opacity:.92">Lv ${l} · ${ln}${l?` · ${fN(lk)} / hit`:''}</div><div style="display:flex;margin:8px 0 2px">${tabs}</div>${info}${hdr}${rows}${foot}<div style="display:flex;gap:6px;margin-top:8px">${any?`<button class="b n" data-trr="${k}" style="flex:1;padding:8px;font-size:13px" ${bw&&s.gold>=rc?'':'disabled'}>↺ Reset tree · 🪙 ${fC(rc)}</button>`:''}<button class="b g" data-trb="1" style="flex:1;padding:8px;font-size:14px">${TRU.from==='pend'?(trNPend()?'◀ Back to pick':'▶ Continue'):'◀ Back'}</button></div></div>`;UI.style.display='flex'}
+function trClose(){const s=st;TRU.sw=null;s.spPend=null;trCheck();if(TRU.from==='pend'){if(s.spPend){trPop(s.spPend);return}resume()}else renderMenu()}
+function trNPend(){let n=0;for(const k of ['tower','barracks']){const t=trS()[k],l=trLv(k);for(let i=0;i<TRMAX;i++)if(l>=TRT[i]&&!t[i])n++}return n}
+function trPop(k){const s=st,i=trPend(k);if(i<0){resume();return}state='perk';TRU.from='pend';TRU.sw=null;const T=TRE[k],r=T.t[i],more=trNPend()-1;
+ UI.innerHTML=`<div class="pn"><h1>${T.ic} ${T.nm} · Tier ${i+1}${i===6?' ★':''}</h1><p>Tier ${i+1} unlocked at Lv ${TRT[i]} (your ${k==='tower'?'towers':'barracks'}: Lv ${trLv(k)}). Choose one upgrade from any branch; swap later between waves.</p>${r.map((n,j)=>`<button class="b n" data-trp="${k}:${i}:${n[0]}" style="font-size:15px;padding:10px;margin:5px 0;text-align:left">${['bal','vol','kn','pa'].includes(n[0])&&typeof specIcon==='function'?`<img src="${specIcon(k,n[0])}" style="width:40px;height:40px;vertical-align:middle;margin-right:6px">`:''}${T.br[j][0]} <b>${n[1]}</b> <small style="opacity:.75;font-weight:400">· ${T.br[j][1]}</small><br><small style="font-weight:400">${n[2]}</small></button>`).join('')}${more>0?`<p style="font-size:13px;color:#69f0ae;margin:6px 0 2px">${more} more pick${more>1?'s':''} queued</p>`:''}<button class="b" data-trv="${k}" style="font-size:13px;padding:7px;margin-top:6px">🌳 View full tree</button></div>`;UI.style.display='flex'}
+UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!st)return;const D=b.dataset;if(!(D.trn||D.trt||D.trc||D.trx||D.trr||D.trb||D.tro||D.trp||D.trv))return;e.stopImmediatePropagation();e.preventDefault();Snd.ui();const s=st;
+ if(D.trp){const [k,i0,id]=D.trp.split(':');trPick(k,+i0,id);saveRun();s.spPend=null;trCheck();if(s.spPend)trPop(s.spPend);else resume();return}
+ if(D.trv){trUI(D.trv,1);return}
  if(D.tro){TRU.from='pause';TRU.sw=null;trUI(D.tro,0);return}
  if(D.trt){TRU.sw=null;trUI(D.trt,0);return}
  if(D.trb){trClose();return}
@@ -1761,7 +1766,7 @@ function trStatRows(k,row){const s=st;trS();const l=trLv(k),R=trRel(k),pc=trPct(
 // ==== HS RAIDS (v18.49): skipped 50-wave gates are raided, in order, before the first wave
 function hsrList(){const s=st;if(!s||!s.prep||!s.skipW||s.daily)return[];const L=[];for(let w=50;w<=s.skipW;w+=50)if(!(s.rdDone||{})[w])L.push(w);return L}
 function hsrLabel(s){const n=hsrList().length;return n?'⚔ START RAIDS ('+n+')':'▶ START WAVE '+(s.wave+1)}
-function hsrGo(){const s=st,L=hsrList();if(!L.length||s.raid)return false;s.hsr=1;s.hsrN=L.length;raidBegin(L[0]);return true}
+function hsrGo(){const s=st,L=hsrList();if(!L.length||s.raid||s.pkPend||s.spPend)return false;s.hsr=1;s.hsrN=L.length;raidBegin(L[0]);return true}
 function hsrTick(){const s=st;if(!s||!s.hsr||s.raid||state!=='play'||s.pkPend||s.spPend||UI.style.display==='flex')return;const L=hsrList();if(L.length){raidBegin(L[0]);return}s.hsr=0;s.prep=false;s.breakT=0;startWave();saveRun()}
 {const _f=frame;frame=function(dt){_f(dt);try{hsrTick()}catch(e){}}}
 
