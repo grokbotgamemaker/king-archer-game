@@ -1111,7 +1111,7 @@ function renderMenu(){const s=st,tw=s.pads.filter(p=>p.kind==='tower'),br=s.pads
 if(mtab==='stats'){const r=s.rs||{},L=meta.ls||{},kb=r.kbt||{},sec=(id,l,h)=>`<button class="tab" data-sec="${id}" style="width:100%;text-align:left;margin:6px 0">${bsec[id]?'▼':'▶'} ${l}</button>`+(bsec[id]?h:'');
 const kbt=Object.keys(kb).sort((a,b)=>kb[b]-kb[a]).map(t=>ENAME[t]+' '+kb[t]).join(' · ')||'—';
 let ART='';const padG=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:4px 0 8px;padding:6px;border:2px solid #c9a14a;border-radius:8px;background:#2a2116"><div style="grid-column:1/-1;font-weight:900;color:#ffd54f;font-size:14px">🧭 Pad Levels</div>${s.pads.filter(p=>!p.hid).map(p=>`<div style="font-size:12px;background:#0004;border-radius:6px;padding:3px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.icon} ${p.kind==='gate'?'Gate':p.name} <b style="color:#ffe066">${p.lv}</b></div>`).join('')}</div>`;body='<button class="b" data-id="resume" style="margin:2px 0 8px">▶ Resume</button>'+padG+sec('sp','✨ Perks'+(st&&st.pk?' ('+PERKS.filter(p=>pk(p[0])).length+')':''),'<div style="padding-left:10px">'+PKS(row)+'</div>')+sec('cs','📊 Current Stats','<div style="padding-left:10px">'+(()=>{const tl=P('tower').lv,T=towSt(tl),bl=P('barracks').lv,B=barSt(bl),ar=ids=>ARTS.filter(a=>ids.includes(a[0])&&aS(a[0])).map(a=>row(a[1],a[2]+' '+'★'.repeat(aS(a[0])),a[4](aS(a[0])))).join('');
-return sec('so','🏹 Offense (King)',row('🏹','Damage / arrow',fN(s.dmg))+row('🎯','Sharp Arrows (Armory)','×'+ARMD(ml('dmg')).toFixed(2))+row('⚡','Shots / sec',s.rate.toFixed(2)+((s.rateX||1)>1.001?' (+'+Math.round((s.rateX-1)*100)+'% overdrive dmg)':''))+row('🎯','Arrows / volley',s.multi)+row('💥','Crit chance',((s.crit+CRC())*100).toFixed(1)+'%')+row('🗡️','Crit damage',(s.cm+CRD()).toFixed(2)+'x'))+sec('sdf','🛡️ Defense & Army',row('❤️','King HP',fN(Math.ceil(s.k.hp))+'/'+fN(s.k.mhp))+row('⚕️','King heal / sec',(s.k.mhp*s.med).toFixed(2)+(s.med?' (×1.5 inside)':''))+row('🛡️','Gate HP',GNAME[P('gate').lv]+' · '+fN(Math.ceil(s.gate.hp))+'/'+fN(s.gate.mhp))+row('🏰','Castle HP',fN(Math.ceil(s.castle.hp))+'/'+fN(s.castle.mhp))+row('🔨','Repair / sec','Gate '+(s.gate.mhp*s.eng).toFixed(1)+' · Castle '+(s.castle.mhp*s.eng).toFixed(1))+(tl?trStatRows('tower',row)+row('🏹','Tower damage / arrow',fN(T.d*XT(null,'d')))+row('⚡','Tower fire rate',T.r.toFixed(2)+'/s')+row('🎯','Tower arrows / volley',XT(null,'n',T.n))+row('📏','Tower range',Math.round(T.rg*XT(null,'rg')))+row('💥','Tower crit',(CRC()*100).toFixed(0)+'% · '+(1.1+CRD()).toFixed(2)+'x')+row('📈','DPS per tower · total',fN(T.r*T.d*XT(null,'d')*XT(null,'n',T.n))+' · '+fN(T.r*T.d*XT(null,'d')*XT(null,'n',T.n)*tw.length)):'')+(bl?trStatRows('barracks',row)+row('👥','Soldiers alive',s.sol.length+' / '+B.cap+(B.cap>=XB('cap',12)?' (max)':''))+row('❤️','Soldier HP',fN(B.hp*XB('hp')))+row('🗡️','Soldier damage',fN(B.d*XB('d')))+row('⏱️','Soldier attack speed',B.as.toFixed(2)+'/s')+row('💥','Soldier crit',(CRC()*100).toFixed(0)+'% · '+(1.1+CRD()).toFixed(2)+'x')+row('📈','DPS per soldier · total',fN(B.dps*XB('d'))+' · '+fN(B.dps*XB('d')*s.sol.length))+row('🔁','Respawn time',(5/XB('sp')).toFixed(1)+'s')+row('📍','Leash range','135'):''))+sec('stro','🏆 Trophies & Banes',troStats(row))+sec('se','💰 Economy',hsEscRow(row)+row('🪙','Gold multiplier','×'+(s.gmul*(1+AV.hG[aS('hoard')])).toFixed(2))+row('🏦','Interest per wave',(s.bank*100).toFixed(0)+'%')+row('🏛️','Interest cap',fN(ICAP(Math.max(1,s.wave)))+(ml('vault')?' (Vault +'+ml('vault')*10+'%)':''))+row('🧲','Gold magnet radius',Math.round(s.mag))+row('👑','Gem bonus (Armory)','+'+(+ml('gm').toFixed(1))+'%')+row('💎','Gems earned this run',fN(gemsFor(s).t))+row('📯','Royal Herald','Lv '+ml('hd'))+row('🚩','Head Start',herBrk().replace('📯 ','')))+(ART=sec('sa','🏺 Artifacts',ar(ARTS.map(a=>a[0]))||row('🏺','No artifacts yet','Unlock on the title screen')),'')})()+sec('sr','🏃 Current Run',row('🌊','Wave',s.wave)+row('⏱️','Time played',fmtT(r.time||0))+row('💀','Kills',fmtN(s.kills))+`<div class="row"><div class="ic">📜</div><div class="tx"><b>Kills by type</b><small>${kbt}</small></div></div>`+row('☠️','Bosses slain',s.bosses)+row('🪙','Gold earned / spent',fmtN(r.ge||0)+' / '+fmtN(r.gs||0))+row('💥','Damage dealt',fmtN(r.dmg||0))+row('🏹','Arrows fired',fmtN(r.arrows||0))+row('✨','Critical hits',fmtN(r.crit||0))+row('⬆️','Upgrades bought',r.ups||0))+'</div>')+ART+sec('sl','🏆 Lifetime <span style="opacity:.8;font-size:13px">· Best wave '+Math.max(best,s.clr||0)+'</span>',`<div class="row" style="border:2px solid #c9a14a;background:#3a2f1c"><div class="ic">🌊</div><div class="tx"><b style="font-size:17px">Highest Wave Completed</b></div><div style="font-weight:900;font-size:22px;color:#fff36b">${Math.max(best,s.clr||0)}</div></div><div style="padding-left:10px">`+sec('lo','🏹 Offense',row('💥','Damage dealt',fmtN(L.dmg||0))+row('🏹','Arrows fired',fmtN(L.arrows||0))+row('✨','Critical hits',fmtN(L.crit||0))+row('💀','Total kills',fmtN((meta.tk||0)+s.kills))+row('☠️','Bosses slain',fmtN(L.boss||0)))+sec('ld','🛡️ Defense & Army',row('🎮','Runs played',L.runs||0)+row('⏱️','Total play time',fmtT(L.time||0)))+sec('le','💰 Economy',row('🪙','Gold earned',fmtN(L.ge||0))+row('🪙','Gold spent',fmtN(L.gs||0))+row('💎','Total gems earned',fmtN(meta.tg||0))+row('⬆️','Upgrades bought',fmtN(L.ups||0)))+`</div>`)}
+return sec('so','🏹 Offense (King)',row('🏹','Damage / arrow',fN(s.dmg))+row('🎯','Sharp Arrows (Armory)','×'+ARMD(ml('dmg')).toFixed(2))+row('⚡','Shots / sec',s.rate.toFixed(2)+((s.rateX||1)>1.001?' (+'+Math.round(((s.rateX||1)*(trN('rate','overc')?1.1:1)-1)*100)+'% overdrive'+(trN('rate','overc')?' · Overcharge':'')+')':''))+trStatRows('rate',row)+row('🎯','Arrows / volley',s.multi)+row('💥','Crit chance',((s.crit+CRC())*100).toFixed(1)+'%')+row('🗡️','Crit damage',(s.cm+CRD()).toFixed(2)+'x'))+sec('sdf','🛡️ Defense & Army',row('❤️','King HP',fN(Math.ceil(s.k.hp))+'/'+fN(s.k.mhp))+row('⚕️','King heal / sec',(s.k.mhp*s.med).toFixed(2)+(s.med?' (×1.5 inside)':''))+row('🛡️','Gate HP',GNAME[P('gate').lv]+' · '+fN(Math.ceil(s.gate.hp))+'/'+fN(s.gate.mhp))+row('🏰','Castle HP',fN(Math.ceil(s.castle.hp))+'/'+fN(s.castle.mhp))+row('🔨','Repair / sec','Gate '+(s.gate.mhp*s.eng).toFixed(1)+' · Castle '+(s.castle.mhp*s.eng).toFixed(1))+(tl?trStatRows('tower',row)+row('🏹','Tower damage / arrow',fN(T.d*XT(null,'d')))+row('⚡','Tower fire rate',T.r.toFixed(2)+'/s')+row('🎯','Tower arrows / volley',XT(null,'n',T.n))+row('📏','Tower range',Math.round(T.rg*XT(null,'rg')))+row('💥','Tower crit',(CRC()*100).toFixed(0)+'% · '+(1.1+CRD()).toFixed(2)+'x')+row('📈','DPS per tower · total',fN(T.r*T.d*XT(null,'d')*XT(null,'n',T.n))+' · '+fN(T.r*T.d*XT(null,'d')*XT(null,'n',T.n)*tw.length)):'')+(bl?trStatRows('barracks',row)+row('👥','Soldiers alive',s.sol.length+' / '+B.cap+(B.cap>=XB('cap',12)?' (max)':''))+row('❤️','Soldier HP',fN(B.hp*XB('hp')))+row('🗡️','Soldier damage',fN(B.d*XB('d')))+row('⏱️','Soldier attack speed',B.as.toFixed(2)+'/s')+row('💥','Soldier crit',(CRC()*100).toFixed(0)+'% · '+(1.1+CRD()).toFixed(2)+'x')+row('📈','DPS per soldier · total',fN(B.dps*XB('d'))+' · '+fN(B.dps*XB('d')*s.sol.length))+row('🔁','Respawn time',(5/XB('sp')).toFixed(1)+'s')+row('📍','Leash range','135'):''))+sec('stro','🏆 Trophies & Banes',troStats(row))+sec('se','💰 Economy',hsEscRow(row)+row('🪙','Gold multiplier','×'+(s.gmul*(1+AV.hG[aS('hoard')])).toFixed(2))+row('🏦','Interest per wave',(s.bank*100).toFixed(0)+'%')+row('🏛️','Interest cap',fN(ICAP(Math.max(1,s.wave)))+(ml('vault')?' (Vault +'+ml('vault')*10+'%)':''))+row('🧲','Gold magnet radius',Math.round(s.mag))+row('👑','Gem bonus (Armory)','+'+(+ml('gm').toFixed(1))+'%')+row('💎','Gems earned this run',fN(gemsFor(s).t))+row('📯','Royal Herald','Lv '+ml('hd'))+row('🚩','Head Start',herBrk().replace('📯 ','')))+(ART=sec('sa','🏺 Artifacts',ar(ARTS.map(a=>a[0]))||row('🏺','No artifacts yet','Unlock on the title screen')),'')})()+sec('sr','🏃 Current Run',row('🌊','Wave',s.wave)+row('⏱️','Time played',fmtT(r.time||0))+row('💀','Kills',fmtN(s.kills))+`<div class="row"><div class="ic">📜</div><div class="tx"><b>Kills by type</b><small>${kbt}</small></div></div>`+row('☠️','Bosses slain',s.bosses)+row('🪙','Gold earned / spent',fmtN(r.ge||0)+' / '+fmtN(r.gs||0))+row('💥','Damage dealt',fmtN(r.dmg||0))+row('🏹','Arrows fired',fmtN(r.arrows||0))+row('✨','Critical hits',fmtN(r.crit||0))+row('⬆️','Upgrades bought',r.ups||0))+'</div>')+ART+sec('sl','🏆 Lifetime <span style="opacity:.8;font-size:13px">· Best wave '+Math.max(best,s.clr||0)+'</span>',`<div class="row" style="border:2px solid #c9a14a;background:#3a2f1c"><div class="ic">🌊</div><div class="tx"><b style="font-size:17px">Highest Wave Completed</b></div><div style="font-weight:900;font-size:22px;color:#fff36b">${Math.max(best,s.clr||0)}</div></div><div style="padding-left:10px">`+sec('lo','🏹 Offense',row('💥','Damage dealt',fmtN(L.dmg||0))+row('🏹','Arrows fired',fmtN(L.arrows||0))+row('✨','Critical hits',fmtN(L.crit||0))+row('💀','Total kills',fmtN((meta.tk||0)+s.kills))+row('☠️','Bosses slain',fmtN(L.boss||0)))+sec('ld','🛡️ Defense & Army',row('🎮','Runs played',L.runs||0)+row('⏱️','Total play time',fmtT(L.time||0)))+sec('le','💰 Economy',row('🪙','Gold earned',fmtN(L.ge||0))+row('🪙','Gold spent',fmtN(L.gs||0))+row('💎','Total gems earned',fmtN(meta.tg||0))+row('⬆️','Upgrades bought',fmtN(L.ups||0)))+`</div>`)}
 else if(mtab==='best'){const sec=(id,l,arr)=>`<button class="tab" data-sec="${id}" style="width:100%;text-align:left;margin:6px 0">${bsec[id]?'▼':'▶'} ${l} (${arr.filter(t=>bst(t).seen).length}/${arr.length})</button>`+(bsec[id]?arr.map(t=>bRow(t,+id.slice(1))).join(''):'');body=`<div style="font-size:12px;opacity:.8;text-align:center;margin:2px 0 6px">Mobs take on the look of the race whose boss comes next${st&&st.wave?' · now: <b>'+RACES[raceFor(Math.max(1,st.wave))][0]+'</b>':''}</div>`+RACES.map((R,i)=>sec('r'+i,['👺','🪓','💀','⚙️','🐸','🐉','❄️','😈','🗡️','🐂'][i]+' '+R[0],[R[1],'gob','wolf','skel','orc','shield','bomber','shaman','knight','troll'])).join('')}
 else body=armGroups(a=>`${FAV.includes(a[0])?'':''}`+`<div class="row"><div class="ic">${a[1]}</div><div class="tx"><b>${a[2]}</b><small>${a[3](mlR(a[0]))}</small><div class="pbar"><i style="width:${Math.min(100,mlR(a[0])/a[4]*100)}%"></i></div></div><div style="font-weight:900;color:#fff36b">Lv ${mlR(a[0])}/${a[4]}</div></div>`)+`<table><tr><td>💎 Gems earned (lifetime)</td><td>${fN(meta.tg||0)}</td></tr><tr><td>💎 Gems available</td><td>${fN(meta.gems)}</td></tr><tr><td>🏆 Highest Wave Completed</td><td>${best}</td></tr><tr><td>⚔️ Total kills</td><td>${fN((meta.tk||0)+s.kills)}</td></tr></table>`;
 if(mtab==='art')mtab='stats';
@@ -1264,7 +1264,7 @@ const XK0=()=>(1+.12*pk('kd'))*(1+TRB('kd')),XK=()=>XK0()*trRallyK(),CRC=()=>.05
 function pkEff(id,n){const P=x=>Math.round(x)+'%';switch(id){case'pl':return'+'+P(12*n)+' gold';case'ct':return'−'+P(8*n)+' tower & barracks cost';case'tw':return'+'+P(15*n)+' tower damage';case'ex':return'+'+P(5*n)+' crit chance, +'+P(20*n)+' crit dmg';case'dm':return'+'+2*n+' soldier cap, +'+P(25*n)+' respawn speed';case'kd':return'+'+P(12*n)+' king damage';case'gt':return'+'+P(20*n)+' gate max HP';case'kv':return'+'+P(20*n)+' king max HP'}return''}
 function PKS(row){const L=PERKS.filter(p=>pk(p[0])>0);if(!L.length)return'<div style="font-size:13px;opacity:.8;padding:4px 8px">No perks yet — first pick at wave 50</div>';return L.map(p=>row(p[1],p[2]+' Lv '+pk(p[0])+'/'+PKMAX,pkEff(p[0],pk(p[0])))).join('')}
 {const _c=cost;cost=function(p){const c=_c(p);return (p.kind==='tower'||p.kind==='barracks')&&pk('ct')?Math.round(c*(1-.08*pk('ct'))):c}}
-{const _a=applyUp;applyUp=function(p){_a(p);if(p.kind==='repair'&&st)st.repU=1;if((p.kind==='tower'||p.kind==='barracks')&&st)trCheck()}}
+{const _a=applyUp;applyUp=function(p){_a(p);if(p.kind==='repair'&&st)st.repU=1;if((p.kind==='tower'||p.kind==='barracks'||p.kind==='rate')&&st)trCheck()}}
 {const _u=upd;upd=function(dt){_u(dt);const s=st;if(s&&spc('barracks')==='pa'){for(const o of s.sol)if(o.hp<o.mhp)o.hp=Math.min(o.mhp,o.hp+o.mhp*.03*dt);if(s.k.hp>0&&s.k.hp<s.k.mhp)s.k.hp=Math.min(s.k.mhp,s.k.hp+s.k.mhp*.004*dt)}}}
 {const _g=gemsFor;gemsFor=function(s){const g=_g(s),m=1+.03*labL('gy');if(m>1)g.t=Math.round(g.t*m);g.lab=m;return g}}
 {const _r=raceFor;raceFor=function(w){return st&&st.daily&&st.drace!=null&&!(w%10===0)?st.drace:_r(w)}}
@@ -1615,7 +1615,7 @@ function troStats(row){const L=TRO.map((t,i)=>[t,i,troT(i)]).filter(x=>x[2]);if(
 
 // ==== TRE START (v18.49 upgrade trees + Arsenal Link)
 const TRT=[10,20,30,45,60,80,100],TRMAX=7,TRL={tower:.20,barracks:.15};
-const TRE={tower:{nm:'Tower',ic:'🗼',br:[['🎯','Siege'],['❄️','Warden'],['🔮','Arcane']],t:[
+const TRE={tower:{nm:'Tower',ic:'🗼',lv:TRT,br:[['🎯','Siege'],['❄️','Warden'],['🔮','Arcane']],t:[
 [['bal','Ballista Bolts','1 bolt/shot ×3.4 dmg, pierces 1 enemy, +15% range'],['frost','Frost Tips','Hits slow 15% for 1.5s (bosses 8%)'],['vol','Volley','+2 arrows/shot at ×0.8 dmg']],
 [['sharp','Sharpened Heads','+25% tower damage'],['rngf','Rangefinder','+20% range, +30% arrow speed, aims at the enemy nearest the gate'],['pierce','Piercing Heads','Ignore armor (Knights, Golems) and shields']],
 [['winch','Rapid Winch','+25% fire rate; rate keeps growing to Lv35 (was 20)'],['shred','Armor Shred','Each hit: +2% dmg taken from ALL sources, ×10 stacks, 4s'],['chain','Chain Shot','Each arrow jumps to a 2nd enemy within 40 for 50%']],
@@ -1623,24 +1623,33 @@ const TRE={tower:{nm:'Tower',ic:'🗼',br:[['🎯','Siege'],['❄️','Warden'],
 [['over','Overcharge','+40% dmg, −10% fire rate'],['dfrz','Deep Freeze','Every 8th volley freezes 1s (bosses: 40% slow 1s)'],['twin','Twin Engines','+1 arrow per volley']],
 [['tmast','Arsenal Mastery','Arsenal Link 20% → 25%'],['storm','Storm of Arrows','Every 12s: 2.5s at ×3 fire rate'],['sbrk','Siege Breaker','+50% dmg to enemies within 60 of the gate']],
 [['drag','Dragon Ballista','Every 6s a piercing bolt down a line: 400% tower dmg to each'],['glac','Glacial Bastion','Enemies in tower range 20% slower (bosses 10%); slowed/frozen take +25%'],['roy','Royal Artillery','Link +1 point per 10 tower levels above 100 (max +10)']]]},
-barracks:{nm:'Barracks',ic:'⚔️',br:[['⚔️','Vanguard'],['🛡️','Bulwark'],['✨','Order']],t:[
+barracks:{nm:'Barracks',ic:'⚔️',lv:TRT,br:[['⚔️','Vanguard'],['🛡️','Bulwark'],['✨','Order']],t:[
 [['bers','Berserkers','Soldier dmg ×1.5, HP ×0.8'],['kn','Knights','Soldier HP ×1.8, dmg ×0.9'],['pa','Paladins','HP ×1.2; heal soldiers 3%/s and king 0.4%/s']],
 [['cleave','Cleave','Hits splash 35% to 1 adjacent enemy'],['hold','Hold the Line','While ≥4 soldiers live, gate takes −25% dmg'],['swift','Swift Muster','−30% respawn time; new soldiers get a 2s shield']],
 [['exec','Execute','Slay non-bosses below 12% HP (bosses take +50% there)'],['taunt','Taunt','Enemies within 40 must fight soldiers first; soldier HP +30%'],['bash','Shield Bash','Every 4th hit stuns 0.8s (bosses 0.2s, 3s immunity)']],
 [['rally','Rally Banner','Soldiers +20% dmg; king +10% dmg within 120 of 3+ soldiers'],['guard','Gate Guard','Soldiers absorb 20% of gate damage with their HP'],['bmust','Bulwark Muster','+2 soldier cap']],
 [['last','Last Stand','Soldiers below 30% HP deal ×2 and take −50%'],['medic','Field Medic','Gate regenerates 0.5% max HP/s while a soldier lives'],['sunder','Sunder','Soldier hits apply Armor Shred (shared stacks & cap)']],
 [['smast','Arsenal Mastery','Arsenal Link 15% → 20%'],['phal','Phalanx','While ≥8 soldiers live, gate takes −35% dmg'],['champ','Champion','One soldier is a Champion: ×4 HP, ×4 dmg, cleave; back 10s after falling']],
-[['fury',"Warlord's Fury",'Each soldier kill: +2% soldier dmg this wave (max +60%)'],['unbr','Unbreakable Gate',"Once per wave the gate can't drop below 1 HP for 5s while a soldier lives"],['legion','Legion of the Crown','+4 soldier cap; Link +1 point per 10 barracks levels above 100 (max +10)']]]}};
+[['fury',"Warlord's Fury",'Each soldier kill: +2% soldier dmg this wave (max +60%)'],['unbr','Unbreakable Gate',"Once per wave the gate can't drop below 1 HP for 5s while a soldier lives"],['legion','Legion of the Crown','+4 soldier cap; Link +1 point per 10 barracks levels above 100 (max +10)']]]},rate:{nm:'Fire Rate',ic:'⚡',lv:[45,55,65,75,90,105,120],br:[['🔥','Fire'],['❄️','Ice'],['⚡','Storm']],t:[
+[['kindle','Kindle','Each arrow adds 12% of its damage as burn over 3s (stacks)'],['chill','Chill','Arrows slow 10% for 1.5s (bosses 5%)'],['static','Static','Every 6th arrow chains to 2 nearby enemies for 25%']],
+[['flash','Flashpoint','Burning enemies take +8% king damage (amp cap)'],['frostbite','Frostbite','Chilled enemies take +10% king damage (amp cap)'],['cap','Capacitor','Static chains +1 target, chain damage 30%']],
+[['combust','Combustion','Burning enemies explode on death for 40% arrow damage, r16'],['shards','Ice Shards','Hits on chilled enemies pierce to 1 more for 60%'],['overc','Overcharge','Overdrive multiplier ×1.10']],
+[['wild','Wildfire','On death, 50% of remaining burn jumps to the nearest enemy'],['freeze','Deep Freeze','Every 12th arrow freezes target 0.8s (4s CD; bosses immune)'],['thunder','Thunderclap','Every 10th arrow: lightning 100% damage r20, 0.3s stun (not bosses)']],
+[['inferno','Inferno','Burn 12%→18% of hit damage, lasts 4s'],['shatter','Shatter','Non-bosses that are frozen or ≥30% slowed and under 12% HP shatter (die), spray 50% r16'],['conduit','Storm Conduit','Static every 4th arrow (from 6th), +1 chain']],
+[['phoenix','Phoenix Arrows','Dragonfire fires 2 shots sooner (min every 2nd); without it, every 12th arrow is a fire blast (80% r22)'],['perma','Permafrost','Chill 10%→18%, 2.5s; enemies hitting the gate are chilled +8% (40% cap)'],['super','Supercell','Chain lightning can crit; chain damage 35%']],
+[['sunfire','Sunfire','Every 12s the next arrow is a Sunfire Bolt: 250% damage r30, leaves 3.5s fire (burn 10%/s)'],['azero','Absolute Zero','Every 15s frost nova: freezes non-bosses 1.2s, bosses slowed 20% for 3s; frozen take +15% (amp cap)'],['tempest','Tempest','Every 6th volley launches ball lightning that bounces 5× for 40% each']]]}};
+
 const TRID={};for(const k in TRE)TRE[k].t.forEach((r,i)=>r.forEach((n,j)=>TRID[n[0]]={k,i,j,n}));
 let TRTA=0;const TRR={sT:12,sOn:0,dT:6,chT:0,hadCh:0},TRFX=[];
-function trS(){const s=st;if(!s)return null;if(!s.tr||!Array.isArray(s.tr.tower)||!Array.isArray(s.tr.barracks)){const o={tower:[null,null,null,null,null,null,null],barracks:[null,null,null,null,null,null,null],fs:0};const sp=s.spec||{};if(sp.tower==='bal'||sp.tower==='vol')o.tower[0]=sp.tower;if(sp.barracks==='kn'||sp.barracks==='pa')o.barracks[0]=sp.barracks;s.tr=o}return s.tr}
+function trS(){const s=st;if(!s)return null;if(!s.tr||!Array.isArray(s.tr.tower)||!Array.isArray(s.tr.barracks)){const o={tower:[null,null,null,null,null,null,null],barracks:[null,null,null,null,null,null,null],rate:[null,null,null,null,null,null,null],fs:0};const sp=s.spec||{};if(sp.tower==='bal'||sp.tower==='vol')o.tower[0]=sp.tower;if(sp.barracks==='kn'||sp.barracks==='pa')o.barracks[0]=sp.barracks;s.tr=o}if(!Array.isArray(s.tr.rate))s.tr.rate=[null,null,null,null,null,null,null];return s.tr}
 function trN(k,id){const s=st;if(!s||s.raid)return false;const t=(s.tr||trS())[k];const i=t.indexOf(id);return i>=0&&i<TRMAX}
 const trLv=k=>{const p=st&&st.pads&&st.pads.find(q=>q.kind===k&&!q.hid);return p?p.lv:0};
-function trPend(k){const t=trS()[k],l=trLv(k);for(let i=0;i<TRMAX;i++)if(l>=TRT[i]&&!t[i])return i;return -1}
-function trCheck(){const s=st;if(!s||s.raid)return;if(s.spPend&&trPend(s.spPend)>=0)return;s.spPend=trPend('tower')>=0?'tower':trPend('barracks')>=0?'barracks':null}
+const trTR=k=>(TRE[k]&&TRE[k].lv)||TRT;
+function trPend(k){const t=trS()[k],l=trLv(k),L=trTR(k);if(!t)return -1;for(let i=0;i<TRMAX;i++)if(l>=L[i]&&!t[i])return i;return -1}
+function trCheck(){const s=st;if(!s||s.raid)return;if(s.spPend&&trPend(s.spPend)>=0)return;s.spPend=trPend('tower')>=0?'tower':trPend('barracks')>=0?'barracks':trPend('rate')>=0?'rate':null}
 const trKA=()=>st.dmg*XK0()*(st.rateX||1);
-function trRel(k){const need=Math.ceil(.8*trLv('bow')),miss=Math.max(0,need-trLv(k));return{rel:Math.pow(.92,miss),need,miss}}
-function trPct(k){let p=TRL[k];if(trN(k,k==='tower'?'tmast':'smast'))p+=.05;if(trN(k,k==='tower'?'roy':'legion'))p+=Math.min(10,Math.max(0,Math.floor((trLv(k)-100)/10)))*.01;return p}
+function trRel(k){if(k==='rate')return{rel:1,need:0,miss:0};const need=Math.ceil(.8*trLv('bow')),miss=Math.max(0,need-trLv(k));return{rel:Math.pow(.92,miss),need,miss}}
+function trPct(k){if(k==='rate'||!TRL[k])return 0;let p=TRL[k];if(trN(k,k==='tower'?'tmast':'smast'))p+=.05;if(trN(k,k==='tower'?'roy':'legion'))p+=Math.min(10,Math.max(0,Math.floor((trLv(k)-100)/10)))*.01;return p}
 function trLink(k){if(!st||st.raid)return 0;return trKA()*trPct(k)*trRel(k).rel}
 function trRallyK(){const s=st;if(!s||s.raid||!trN('barracks','rally'))return 1;let n=0;for(const o of s.sol)if(dist(o.x,o.y,s.k.x,s.k.y)<120&&++n>=3)return 1.1;return 1}
 function trRM(){return(trN('tower','winch')?1.25:1)*(trN('tower','over')?.9:1)}
@@ -1658,7 +1667,7 @@ function trTH(a,e){const t=st.t,B=isB(e.type);
  if(a.chn){a.chn=0;let b=null,bd=40;for(const o of st.en){if(o===e||o.hp<=0)continue;const d=dist(o.x,o.y,e.x,e.y);if(d<bd){bd=d;b=o}}if(b){hit(b,a.dmg*.5*trTM(a,b),0,2);if(TRFX.length<60)TRFX.push({t:'ch',x1:e.x,y1:e.y-e.r,x2:b.x,y2:b.y-b.r,l:.22,ml:.22});ST_tr('chain')}}
  if(trN('tower','shrap')){let n=0;for(const o of st.en){if(o===e||o.hp<=0)continue;if(dist(o.x,o.y,e.x,e.y)<18+o.r*.5){hit(o,a.dmg*.35,0,1);n++}}if(TRFX.length<60)TRFX.push({t:'sp',x1:e.x,y1:e.y-e.r,l:.25,ml:.25});if(n)ST_tr('shrap')}
  if(a.pc>0){a.pc--;(a.hs=a.hs||[]).push(e);a.t=null;return true}return false}
-function trAmp(e){const t=st.t;let a=0;if(e.shU>t)a+=.02*(e.shN||0);if(e.mkU>t)a+=.15;if(trN('tower','glac')&&(e._sl>0||e.frU>t||e.dfU>t))a+=.25;return Math.min(.35,a)}
+function trAmp(e){const t=st.t;let a=0;if(e.shU>t)a+=.02*(e.shN||0);if(e.mkU>t)a+=.15;if(trN('tower','glac')&&(e._sl>0||e.frU>t||e.dfU>t))a+=.25;if(trN('rate','flash')&&e.kburn>0)a+=.08;if(trN('rate','frostbite')&&e.kcU>t)a+=.10;if(trN('rate','azero')&&e.frU>t)a+=.15;return Math.min(.35,a)}
 function trSolHit(o,t,d,cr){const s=st,B=isB(t.type);let m=1;if(trN('barracks','last')&&o.hp<.3*o.mhp)m*=2;if(o.ch)m*=4;if(trN('barracks','fury'))m*=1+Math.min(.6,.02*((s.trw&&s.trw.fu)||0));if(trN('barracks','exec')&&B&&t.hp<.12*t.mhp)m*=1.5;
  hit(t,d*m,cr);
  if(trN('barracks','sunder'))trShred(t);
@@ -1670,11 +1679,11 @@ function trW(){const s=st;if(!s.trw||s.trw.w!==s.wave)s.trw={w:s.wave,fu:0,ub:0,
 function trGateRed(n){let o=0;if(trN('barracks','hold')&&n>=4)o+=.25;if(trN('barracks','phal')&&n>=8)o+=.35;o=Math.min(.5,o);const g=trN('barracks','guard')&&n>0?Math.min(.2,.5-o):0;return{o,g}}
 // pre/post step around the home update
 {const _u=upd;upd=function(dt){const s=st;if(!s||s.raid||!s.tr&&!trS())return _u(dt);const t=s.t,tr=s.tr;
- const anyT=tr.tower.some(x=>x),anyB=tr.barracks.some(x=>x);
+ const anyT=tr.tower.some(x=>x),anyB=tr.barracks.some(x=>x),anyR=tr.rate&&tr.rate.some(x=>x);
  TRTA=trN('barracks','taunt')?33:0;
  // slows
  let gl=null;if(trN('tower','glac')){const tp=s.pads.filter(p=>p.kind==='tower'&&p.lv);gl=tp.map(p=>[CX+(p.x<CX?-38:38),WALLY-20,(115+Math.min(p.lv,10)*3.5)*XT(p,'rg')])}
- for(const e of s.en){e._sl=0;if(e.hp<=0)continue;const B=isB(e.type);let sl=0;if(e.fsU>t)sl+=B?.08:.15;if(gl)for(const g of gl)if(dist(e.x,e.y,g[0],g[1])<g[2]){sl+=B?.1:.2;break}let cap=B?.2:.4;if(e.dfU>t){sl+=.4;cap=.4}sl=Math.min(cap,sl);e._sl=sl;if(sl>0){if(e.type==='minotaur'&&!e.sp0)e.sp0=e.sp;e._b=e.sp;e.sp*=1-sl;e._f=e.sp}}
+ for(const e of s.en){e._sl=0;if(e.hp<=0)continue;const B=isB(e.type);let sl=0;if(e.fsU>t)sl+=B?.08:.15;if(gl)for(const g of gl)if(dist(e.x,e.y,g[0],g[1])<g[2]){sl+=B?.1:.2;break}if(e.kcU>t)sl+=e.kcS||0;if(e.azU>t)sl+=B?.2:0;let cap=B?.2:.4;if(e.dfU>t){sl+=.4;cap=.4}sl=Math.min(cap,sl);e._sl=sl;if(sl>0){if(e.type==='minotaur'&&!e.sp0)e.sp0=e.sp;e._b=e.sp;e.sp*=1-sl;e._f=e.sp}}
  // soldiers & gate snapshot
  const sol0=s.sol.slice();for(const o of sol0)o._h=o.hp;const g0=s.gate.hp;
  // storm / dragon timers
@@ -1726,7 +1735,7 @@ function trDrawW(){const s=st;if(!s||s.raid||!s.tr)return;const t=s.t,gf=GF();X.
 function trCost(k,m){const p=st.pads.find(q=>q.kind===k&&!q.hid);return p?Math.round(cost(p)*m):0}
 const trBetween=()=>{const s=st;return !!s&&(s.prep||(s.breakT>0&&!s.en.length&&!s.spawnLeft&&!s.boss))};
 function trStrip(k,id){const s=st;if(id==='champ')for(const o of s.sol)if(o.ch){o.ch=0;o.mhp/=4;o.hp=Math.min(o.hp,o.mhp)}}
-function trPick(k,i,id){const s=st,t=trS()[k];if(i>=TRMAX||trLv(k)<TRT[i]||!TRE[k].t[i].some(n=>n[0]===id))return false;if(t[i]===id)return false;
+function trPick(k,i,id){const s=st,t=trS()[k];if(i>=TRMAX||trLv(k)<trTR(k)[i]||!TRE[k].t[i].some(n=>n[0]===id))return false;if(t[i]===id)return false;
  if(!t[i]){t[i]=id;trSync(k);return true}
  if(!trBetween())return false;const c=s.tr.fs?trCost(k,.5):0;if(s.gold<c)return false;s.gold-=c;if(!s.tr.fs)s.tr.fs=1;trStrip(k,t[i]);t[i]=id;trSync(k);return true}
 function trReset(k){const s=st,c=trCost(k,1.5);if(!trBetween()||s.gold<c||!s.tr[k].some(x=>x))return false;s.gold-=c;s.tr[k].forEach(id=>id&&trStrip(k,id));s.tr[k]=[null,null,null,null,null,null,null];trSync(k);return true}
@@ -1734,10 +1743,10 @@ function trSync(k){const s=st;if(s.spec){const v=s.tr[k][0];if(v==='bal'||v==='v
 // UI
 let TRU={k:'tower',sw:null,from:'pause'};
 function trUI(k,pend){const s=st;if(!s)return;trS();TRU.k=k;if(pend){state='perk';TRU.from='pend'}const T=TRE[k],t=s.tr[k],l=trLv(k),pi=trPend(k),R=trRel(k),pc=trPct(k),bw=trBetween(),fs=!s.tr.fs,sc=trCost(k,.5),rc=trCost(k,1.5),lk=trLink(k);
- const ln=l?`Arsenal Link: ${Math.round(pc*100)}% of king arrow `+(R.miss?`<b style="color:#ff8a65">(−${Math.round((1-R.rel)*100)}%: raise to Lv ${R.need})</b>`:'<b style="color:#69f0ae">(full)</b>'):'Build this pad to start';
- const tabs=['tower','barracks'].map(q=>`<button class="b ${q===k?'g':'n'}" data-trt="${q}" style="flex:1;margin:0 3px;padding:7px 4px;font-size:14px">${TRE[q].ic} ${TRE[q].nm}${trPend(q)>=0?' <span style="color:#ff5252">●</span>':''}</button>`).join('');
+ const ln=(k==='rate')?(l?'Overdrive stays active; pick a branch each tier. Branches mix freely.':''):(l?`Arsenal Link: ${Math.round(pc*100)}% of king arrow `+(R.miss?`<b style="color:#ff8a65">(−${Math.round((1-R.rel)*100)}%: raise to Lv ${R.need})</b>`:'<b style="color:#69f0ae">(full)</b>'):'Build this pad to start');
+ const tabs=['tower','barracks','rate'].map(q=>`<button class="b ${q===k?'g':'n'}" data-trt="${q}" style="flex:1;margin:0 3px;padding:7px 4px;font-size:14px">${TRE[q].ic} ${TRE[q].nm}${trPend(q)>=0?' <span style="color:#ff5252">●</span>':''}</button>`).join('');
  const hdr=`<div style="display:grid;grid-template-columns:38px 1fr 1fr 1fr;gap:4px;font-size:11px;font-weight:800;opacity:.85;margin:6px 0 2px"><div></div>${T.br.map(b=>`<div style="text-align:center">${b[0]} ${b[1]}</div>`).join('')}</div>`;
- const rows=T.t.map((r,i)=>{const un=i<TRMAX&&l>=TRT[i],soon=i>=TRMAX;return`<div style="display:grid;grid-template-columns:38px 1fr 1fr 1fr;gap:4px;margin:4px 0;align-items:stretch"><div style="font-size:11px;font-weight:900;text-align:center;align-self:center;line-height:1.15;color:${un?'#ffe066':'#aaa'}">${i===6?'★':'T'+(i+1)}<br>Lv${TRT[i]}</div>${r.map((n,j)=>{const ch=t[i]===n[0],sel=TRU.sw&&TRU.sw.i===i&&TRU.sw.id===n[0];let bg='#2b2418',bd='2px solid #5a4a30',op=1,badge='';
+ const rows=T.t.map((r,i)=>{const un=i<TRMAX&&l>=TRT[i],soon=i>=TRMAX;return`<div style="display:grid;grid-template-columns:38px 1fr 1fr 1fr;gap:4px;margin:4px 0;align-items:stretch"><div style="font-size:11px;font-weight:900;text-align:center;align-self:center;line-height:1.15;color:${un?'#ffe066':'#aaa'}">${i===6?'★':'T'+(i+1)}<br>Lv${trTR(k)[i]}</div>${r.map((n,j)=>{const ch=t[i]===n[0],sel=TRU.sw&&TRU.sw.i===i&&TRU.sw.id===n[0];let bg='#2b2418',bd='2px solid #5a4a30',op=1,badge='';
   if(!un){op=.42;badge=soon?'Coming soon':'🔒 Lv'+TRT[i]}else if(ch){bg='#4a3a12';bd='2px solid #ffd740';badge='✔ Active'}else if(!t[i]){bd='2px dashed #69f0ae';badge='Tap to pick'}else badge=sel?'Selected':'Swap';
   if(sel)bd='2px solid #4fc3f7';
   return`<button data-trn="${k}:${i}:${n[0]}" ${un?'':'disabled'} style="background:${bg};border:${bd};opacity:${op};border-radius:9px;color:#fff;padding:5px 4px;text-align:left;font-family:inherit;min-height:74px;cursor:pointer;${ch?'box-shadow:0 0 8px #ffd74088;':''}"><div style="font-size:11.5px;font-weight:900;line-height:1.15;color:${ch?'#ffe066':'#fff'}">${T.br[j][0]} ${n[1]}</div><div style="font-size:10px;line-height:1.2;opacity:.9;margin-top:2px">${n[2]}</div><div style="font-size:9.5px;font-weight:800;margin-top:3px;color:${ch?'#ffd740':!un?'#bbb':!t[i]?'#69f0ae':'#8fd3ff'}">${badge}</div></button>`}).join('')}</div>`}).join('');
@@ -1747,9 +1756,9 @@ function trUI(k,pend){const s=st;if(!s)return;trS();TRU.k=k;if(pend){state='perk
  const any=t.some(x=>x);
  UI.innerHTML=`<div class="pn" style="max-width:500px;padding:12px 10px"><h1 style="font-size:21px;margin:2px 0 4px">${T.ic} ${T.nm} Tree</h1><div style="font-size:12px;opacity:.92">Lv ${l} · ${ln}${l?` · ${fN(lk)} / hit`:''}</div><div style="display:flex;margin:8px 0 2px">${tabs}</div>${info}${hdr}${rows}${foot}<div style="display:flex;gap:6px;margin-top:8px">${any?`<button class="b n" data-trr="${k}" style="flex:1;padding:8px;font-size:13px" ${bw&&s.gold>=rc?'':'disabled'}>↺ Reset tree · 🪙 ${fC(rc)}</button>`:''}<button class="b g" data-trb="1" style="flex:1;padding:8px;font-size:14px">${TRU.from==='pend'?(trNPend()?'◀ Back to pick':'▶ Continue'):'◀ Back'}</button></div></div>`;UI.style.display='flex'}
 function trClose(){const s=st;TRU.sw=null;s.spPend=null;trCheck();if(TRU.from==='pend'){if(s.spPend){trPop(s.spPend);return}resume()}else renderMenu()}
-function trNPend(){let n=0;for(const k of ['tower','barracks']){const t=trS()[k],l=trLv(k);for(let i=0;i<TRMAX;i++)if(l>=TRT[i]&&!t[i])n++}return n}
+function trNPend(){let n=0;for(const k of ['tower','barracks','rate']){const t=trS()[k],l=trLv(k),L=trTR(k);for(let i=0;i<TRMAX;i++)if(l>=L[i]&&!t[i])n++}return n}
 function trPop(k){const s=st,i=trPend(k);if(i<0){resume();return}state='perk';TRU.from='pend';TRU.sw=null;const T=TRE[k],r=T.t[i],more=trNPend()-1;
- UI.innerHTML=`<div class="pn"><h1>${T.ic} ${T.nm} · Tier ${i+1}${i===6?' ★':''}</h1><p>Tier ${i+1} unlocked at Lv ${TRT[i]} (your ${k==='tower'?'towers':'barracks'}: Lv ${trLv(k)}). Choose one upgrade from any branch; swap later between waves.</p>${r.map((n,j)=>`<button class="b n" data-trp="${k}:${i}:${n[0]}" style="font-size:15px;padding:10px;margin:5px 0;text-align:left">${['bal','vol','kn','pa'].includes(n[0])&&typeof specIcon==='function'?`<img src="${specIcon(k,n[0])}" style="width:40px;height:40px;vertical-align:middle;margin-right:6px">`:''}${T.br[j][0]} <b>${n[1]}</b> <small style="opacity:.75;font-weight:400">· ${T.br[j][1]}</small><br><small style="font-weight:400">${n[2]}</small></button>`).join('')}${more>0?`<p style="font-size:13px;color:#69f0ae;margin:6px 0 2px">${more} more pick${more>1?'s':''} queued</p>`:''}<button class="b" data-trv="${k}" style="font-size:13px;padding:7px;margin-top:6px">🌳 View full tree</button></div>`;UI.style.display='flex'}
+ UI.innerHTML=`<div class="pn"><h1>${T.ic} ${T.nm} · Tier ${i+1}${i===6?' ★':''}</h1><p>Tier ${i+1} unlocked at Lv ${trTR(k)[i]} (your ${k==='tower'?'towers':k==='barracks'?'barracks':'fire rate'}: Lv ${trLv(k)}). Choose one upgrade from any branch; swap later between waves.</p>${r.map((n,j)=>`<button class="b n" data-trp="${k}:${i}:${n[0]}" style="font-size:15px;padding:10px;margin:5px 0;text-align:left">${['bal','vol','kn','pa'].includes(n[0])&&typeof specIcon==='function'?`<img src="${specIcon(k,n[0])}" style="width:40px;height:40px;vertical-align:middle;margin-right:6px">`:''}${T.br[j][0]} <b>${n[1]}</b> <small style="opacity:.75;font-weight:400">· ${T.br[j][1]}</small><br><small style="font-weight:400">${n[2]}</small></button>`).join('')}${more>0?`<p style="font-size:13px;color:#69f0ae;margin:6px 0 2px">${more} more pick${more>1?'s':''} queued</p>`:''}<button class="b" data-trv="${k}" style="font-size:13px;padding:7px;margin-top:6px">🌳 View full tree</button></div>`;UI.style.display='flex'}
 UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!st)return;const D=b.dataset;if(!(D.trn||D.trt||D.trc||D.trx||D.trr||D.trb||D.tro||D.trp||D.trv))return;e.stopImmediatePropagation();e.preventDefault();Snd.ui();const s=st;
  if(D.trp){const [k,i0,id]=D.trp.split(':');trPick(k,+i0,id);saveRun();s.spPend=null;trCheck();if(s.spPend)trPop(s.spPend);else resume();return}
  if(D.trv){trUI(D.trv,1);return}
@@ -1760,21 +1769,56 @@ UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!st)re
  if(D.trn){const [k,i0,id]=D.trn.split(':'),i=+i0,t=s.tr[k];if(!t[i]){trPick(k,i,id);TRU.sw=null;saveRun();s.spPend=null;trCheck();trUI(trPend(k)<0&&TRU.from==='pend'&&s.spPend?s.spPend:k,0);return}if(t[i]===id){TRU.sw=null;trUI(k,0);return}TRU.sw={k,i,id};trUI(k,0);return}
  if(D.trc){const w=TRU.sw;if(w&&trPick(w.k,w.i,w.id)){toast('Swapped to '+TRID[w.id].n[1],true);saveRun()}TRU.sw=null;trUI(TRU.k,0);return}
  if(D.trr){if(trReset(D.trr)){toast(TRE[D.trr].nm+' tree reset',true);saveRun()}TRU.sw=null;trUI(D.trr,0);return}},true);
-function trMenuRows(){const s=st;trS();return['tower','barracks'].map(k=>{const t=s.tr[k],n=t.filter((x,i)=>x&&i<TRMAX).length,l=trLv(k),p=trPend(k);return`<div class="row"><div class="ic">${TRE[k].ic}</div><div class="tx"><b>${TRE[k].nm} Tree: ${n}/${TRMAX} nodes</b><small>${n?t.filter(x=>x).map(x=>TRID[x].n[1]).join(' · '):l>=TRT[0]?'Pick your first node':'Unlocks at Lv '+TRT[0]}${p>=0?' · <b style="color:#69f0ae">pick ready</b>':''}</small></div><button class="buy" data-tro="${k}">🌳 Open</button></div>`}).join('')}
-function trStatRows(k,row){const s=st;trS();const l=trLv(k),R=trRel(k),pc=trPct(k);let h=row('🔗','Arsenal Link',Math.round(pc*100)+'%'+(R.miss?' · −'+Math.round((1-R.rel)*100)+'% → Lv '+R.need:' · full'));const t=s.tr[k],L=[];t.forEach((id,i)=>{if(id&&i<TRMAX){const n=TRID[id];L.push(`<div style="margin:2px 0"><b style="color:#ffe066">${TRE[k].br[n.j][0]} T${i+1} ${n.n[1]}</b> <span style="opacity:.85">${n.n[2]}</span></div>`)}});const p=trPend(k);h+=`<div class="row" style="display:block;padding:6px 10px;font-size:12px;line-height:1.3"><div style="font-weight:900;font-size:13px;margin-bottom:2px">🌳 ${TRE[k].nm} tree · ${L.length}/${TRMAX}${p>=0?' · <span style="color:#69f0ae">tier '+(p+1)+' pick ready</span>':''}</div>${L.join('')||'<div style="opacity:.8">'+(l>=TRT[0]?'No nodes picked yet':'Unlocks at Lv '+TRT[0])+'</div>'}</div>`;return h}
+function trMenuRows(){const s=st;trS();return['tower','barracks','rate'].map(k=>{const t=s.tr[k]||[],n=t.filter((x,i)=>x&&i<TRMAX).length,l=trLv(k),p=trPend(k),L=trTR(k);return`<div class="row"><div class="ic">${TRE[k].ic}</div><div class="tx"><b>${TRE[k].nm} Tree: ${n}/${TRMAX} nodes</b><small>${n?t.filter(x=>x).map(x=>TRID[x].n[1]).join(' · '):l>=L[0]?'Pick your first node':'Unlocks at Lv '+L[0]}${p>=0?' · <b style="color:#69f0ae">pick ready</b>':''}</small></div><button class="buy" data-tro="${k}">🌳 Open</button></div>`}).join('')}
+function trStatRows(k,row){const s=st;trS();const l=trLv(k),R=trRel(k),pc=trPct(k);let h=row('🔗','Arsenal Link',Math.round(pc*100)+'%'+(R.miss?' · −'+Math.round((1-R.rel)*100)+'% → Lv '+R.need:' · full'));const t=s.tr[k],L=[];t.forEach((id,i)=>{if(id&&i<TRMAX){const n=TRID[id];L.push(`<div style="margin:2px 0"><b style="color:#ffe066">${TRE[k].br[n.j][0]} T${i+1} ${n.n[1]}</b> <span style="opacity:.85">${n.n[2]}</span></div>`)}});const p=trPend(k);h+=`<div class="row" style="display:block;padding:6px 10px;font-size:12px;line-height:1.3"><div style="font-weight:900;font-size:13px;margin-bottom:2px">🌳 ${TRE[k].nm} tree · ${L.length}/${TRMAX}${p>=0?' · <span style="color:#69f0ae">tier '+(p+1)+' pick ready</span>':''}</div>${L.join('')||'<div style="opacity:.8">'+(l>=trTR(k)[0]?'No nodes picked yet':'Unlocks at Lv '+trTR(k)[0])+'</div>'}</div>`;return h}
 // ==== TRE END
-// ==== HS RAIDS (v18.49): skipped 50-wave gates are raided, in order, before the first wave
-function hsrList(){const s=st;if(!s||!s.prep||!s.skipW||s.daily)return[];const L=[];for(let w=50;w<=s.skipW;w+=50)if(!(s.rdDone||{})[w])L.push(w);return L}
-function hsrLabel(s){const n=hsrList().length;return n?(s.rPortal?'🌀 RIDE INTO THE PORTAL':'🌀 OPEN PORTAL ('+n+' RAID'+(n>1?'S':'')+')'):'▶ START WAVE '+(s.wave+1)}
-function hsrGo(){const s=st,L=hsrList();if(!L.length)return false;if(s.raid||s.hsr||s.pkPend||s.spPend)return true;if(!s.rPortal)ptOpen(0,1);return true}
-function hsrEnter(){const s=st,L=hsrList();if(!L.length||s.raid||s.pkPend||s.spPend)return false;s.hsr=1;s.hsrN=L.length;raidBegin(L[0]);return true}
-function hsrTick(){const s=st;if(!s||!s.hsr||s.raid||state!=='play'||s.pkPend||s.spPend||UI.style.display==='flex')return;const L=hsrList();if(L.length){raidBegin(L[0]);return}s.hsr=0;s.prep=false;s.breakT=0;startWave();saveRun()}
-{const _f=frame;frame=function(dt){_f(dt);try{hsrTick()}catch(e){}}}
-// jackpot escrow for skipped-gate raids: paid once after start wave + 10 is cleared
-function hsEscTry(){const s=st;if(!s||!s.hsEsc||s.hsEscPaid||s.raid)return;if((s.clr||0)<(s.skipW||0)+10)return;meta.escPaid=meta.escPaid||[];const key=s.rid||'x';s.hsEscPaid=1;if(meta.escPaid.includes(key)){saveRun();return}meta.escPaid.push(key);if(meta.escPaid.length>100)meta.escPaid=meta.escPaid.slice(-100);meta.gems+=s.hsEsc;meta.tg=(meta.tg||0)+s.hsEsc;pop('💎 RAID JACKPOT UNLOCKED: +'+fN(s.hsEsc)+' GEMS','#e0a0ff');try{Snd.sfx('coin')}catch(e){}saveMeta();saveRun()}
+// ==== HS SKIPPED-GATE BONUSES (v18.53): skipped gates grant raid rewards, no forced raids
+// Trophies + gem jackpots held in escrow until start wave + 10 cleared (anti-farm).
+// Perk picks + spoils grant immediately (run-only).
+function hsrList(){const s=st;if(!s||!s.skipW)return[];const L=[];for(let w=50;w<=s.skipW;w+=50)if(!(s.rdDone||{})[w])L.push(w);return L}
+function hsrLabel(s){return'▶ START WAVE '+(s.wave+1)}
+function hsrGo(){return false} // no portal/raid chain for Head Start anymore
+function hsrGrant(){const s=st;if(!s||s.hsGranted||!s.skipW)return null;const L=hsrList();if(!L.length){s.hsGranted=1;return null}
+ s.hsGranted=1;s.rdDone=s.rdDone||{};meta.rdGot=meta.rdGot||[];meta.tro=meta.tro||{};
+ const sum={n:L.length,tro:0,perk:0,gem:0,gold:0,races:{}};const perksLeft=()=>PERKS.some(p=>pk(p[0])<PKMAX);
+ for(const w of L){const race=raidRace(w),rew=rrNext();meta.rdN=(meta.rdN||0)+1;
+  const key=(s.rid||'x')+':'+w;s.rdDone[w]=1;
+  // trophy conquest — ESCROW (anti-farm abandon loop)
+  (s.hsTro=s.hsTro||[]).push({race,w});sum.tro++;sum.races[race]=(sum.races[race]|0)+1;
+  // rotating reward
+  let rv=0,r=rew;if(r===0&&!perksLeft())r=1;
+  if(r===0){(s.pkQ=s.pkQ||[]).push(w);sum.perk++;rv=1}
+  else if(r===1){rv=jackpot(w,meta.rdN);s.hsEsc=(s.hsEsc||0)+rv;sum.gem+=rv}
+  else{rv=spoils(w);s.gold+=rv;sum.gold+=rv}
+  (s.rdLog=s.rdLog||[]).push([w,race,r,rv]);
+  // reserve the claim key so a later real raid at this gate can't double-pay; trophies applied on escrow payout
+  if(!meta.rdGot.includes(key))meta.rdGot.push(key);if(meta.rdGot.length>200)meta.rdGot=meta.rdGot.slice(-200)}
+ if(sum.perk&&!s.pkPend&&s.pkQ&&s.pkQ.length)s.pkPend=s.pkQ.shift();
+ s.hsSum=sum;saveRun();saveMeta();return sum}
+function hsrSumUI(){const s=st,u=s&&s.hsSum;if(!u)return;state='hsSum';
+ const races=Object.keys(u.races).map(i=>{const n=+i,nm=(RACES[n]||['?'])[0],c=u.races[i];return nm+(c>1?' ×'+c:'')}).join(', ');
+ const gemL=u.gem?`<p>🔒 <b>${fN(u.gem)}</b> gems held — unlocks after wave ${(s.skipW||0)+10}</p>`:'';
+ const troL=u.tro?`<p>🏆 <b>${u.tro}</b> trophy conquest${u.tro>1?'s':''} held (same unlock)${races?' · '+races:''}</p>`:'';
+ const pkL=u.perk?`<p>🎴 <b>${u.perk}</b> bonus perk pick${u.perk>1?'s':''} queued</p>`:'';
+ const gL=u.gold?`<p>🪙 <b>${fN(u.gold)}</b> spoils gold added</p>`:'';
+ UI.innerHTML=`<div class="pn" style="text-align:center"><h1>🌀 Skipped Gate Spoils</h1><p style="margin:4px 0 10px">Gates 50–${s.skipW}: <b>${u.n}</b> conquest${u.n>1?'s':''} granted without raiding</p>${troL}${pkL}${gemL}${gL}<p style="font-size:12px;opacity:.8;margin-top:8px">Trophy progress and gem jackpots unlock after you clear 10 real waves. Abandoning earlier forfeits them.</p><button class="b" data-id="hsSumOk">▶ Continue</button></div>`;UI.style.display='flex'}
+// Grant once when a Head Start run enters prep (after newGame/headStart + catch-up perk queue)
+{const _ng=newGame;newGame=function(sw=1){const r=_ng(sw);try{if(st&&st.skipW){hsrGrant();if(st.hsSum)hsrSumUI()}}catch(e){console.error(e)}return r}}
+{const _l=loadRun;loadRun=function(...a){const r=_l.apply(this,a);try{const s=st;if(s&&s.skipW&&!s.hsGranted){hsrGrant()}if(s&&s.hsSum&&!s.hsSumSeen&&s.prep)hsrSumUI()}catch(e){}return r}}
+UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.id!=='hsSumOk')return;if(st)st.hsSumSeen=1;UI.innerHTML='';UI.style.display='none';if(st&&st.pkPend){state='play';modal()}else{state='play';saveRun()}},true);
+// Escrow payout: gems + trophy conquests, once after start wave + 10
+function hsEscTry(){const s=st;if(!s||s.hsEscPaid||s.raid)return;if((s.clr||0)<(s.skipW||0)+10)return;const hasG=s.hsEsc>0,hasT=s.hsTro&&s.hsTro.length;if(!hasG&&!hasT)return;
+ meta.escPaid=meta.escPaid||[];const key=s.rid||'x';s.hsEscPaid=1;
+ if(meta.escPaid.includes(key)){saveRun();return}
+ meta.escPaid.push(key);if(meta.escPaid.length>100)meta.escPaid=meta.escPaid.slice(-100);
+ if(hasG){meta.gems+=s.hsEsc;meta.tg=(meta.tg||0)+s.hsEsc;pop('💎 RAID JACKPOT UNLOCKED: +'+fN(s.hsEsc)+' GEMS','#e0a0ff')}
+ if(hasT){const b0=troSnap();meta.tro=meta.tro||{};for(const x of s.hsTro)meta.tro[x.race]=(meta.tro[x.race]||0)+1;troApplyDelta(b0);pop('🏆 TROPHY CONQUESTS UNLOCKED: +'+s.hsTro.length,'#ffd740');s.hsTro=[]}
+ try{Snd.sfx('coin')}catch(e){}saveMeta();saveRun()}
 {const _wd=waveDone;waveDone=function(w){_wd(w);try{hsEscTry()}catch(e){}}}
-{const _l=loadRun;loadRun=function(...a){const r=_l.apply(this,a);try{hsEscTry()}catch(e){}return r}}
-function hsEscRow(row){const s=st;if(!s||!s.hsEsc)return'';return row('🔒','Raid jackpot',s.hsEscPaid?'Paid: '+fN(s.hsEsc)+' gems':'Held: '+fN(s.hsEsc)+' gems · unlocks after wave '+((s.skipW||0)+10))}
+{const _l2=loadRun;loadRun=function(...a){const r=_l2.apply(this,a);try{hsEscTry()}catch(e){}return r}}
+function hsEscRow(row){const s=st;if(!s||!(s.hsEsc||(s.hsTro&&s.hsTro.length)))return'';
+ const gem=s.hsEsc?('Held: '+fN(s.hsEsc)+' gems'):'';const tro=s.hsTro&&s.hsTro.length?((gem?', ':'')+s.hsTro.length+' trophies'):'';
+ return row('🔒','Raid spoils',s.hsEscPaid?'Paid':'Held: '+gem+tro+' · unlocks after wave '+((s.skipW||0)+10))}
 // ==== WALK-IN PORTAL (v18.51): gate raids start only when the king rides into the portal
 function ptSpot(){const s=st,k=s.k,ax=CX,ay=WALLY+78;let best=null,bs=1e9;
  for(let y=WALLY+42;y<=WH-28;y+=6)for(let x=SIDE+28;x<=WW-SIDE-28;x+=6){
@@ -1783,7 +1827,7 @@ function ptSpot(){const s=st,k=s.k,ax=CX,ay=WALLY+78;let best=null,bs=1e9;
   const d=Math.hypot(x-ax,(y-ay)*1.4);if(d<bs){bs=d;best=[x,y]}}
  return best||[CX,WALLY+70]}
 function ptOpen(w,hs){const s=st;if(!s)return;if(s.rPortal){if(w&&!hs&&s.rPortal.w!==w){s.rpQ=s.rpQ||[];if(!s.rpQ.includes(w))s.rpQ.push(w)}return}const [x,y]=ptSpot();s.rPortal={w:w||0,hs:hs?1:0,x,y,t0:s.t||0};if(s.breakT>0)s.breakT=99;try{Snd.sfx('roar')}catch(e){}pop('🌀 A RAID PORTAL OPENS!','#d7a8ff');saveRun()}
-function ptEnter(){const s=st,P0=s.rPortal,k=s.k;if(P0.hs){k.x=P0.x;k.y=P0.y;k.vx=k.vy=0;s.rPortal=null;if(!hsrEnter()){s.rPortal=P0}return}
+function ptEnter(){const s=st,P0=s.rPortal,k=s.k;if(P0.hs){s.rPortal=null;return}
  const w=P0.w;s.rPortal=null;if((s.rdDone||{})[w]){ptNext();return}k.x=P0.x;k.y=P0.y;k.vx=k.vy=0;if(s.breakT>0)s.breakT=8*(1-AV.gB[aS('glass')]);raidBegin(w)}
 function ptNext(){const s=st;if(!s||s.rPortal||!s.rpQ||!s.rpQ.length)return;const w=s.rpQ.shift();if(!(s.rdDone||{})[w])ptOpen(w)}
 function ptTick(){const s=st;if(!s||s.raid||!s.rPortal||state!=='play'||UI.style.display==='flex'||s.k.hp<=0)return;const P0=s.rPortal,k=s.k;
@@ -1805,12 +1849,97 @@ function ptDrawW(){const s=st;if(!s||s.raid)return;const T=performance.now()/100
  if(s.rPortal){const P0=s.rPortal,a=Math.min(1,Math.max(.05,((s.t||0)-(P0.t0||0))/.8));ptSwirl(P0.x,P0.y,a,T,'#b388ff');const k=s.k,d=Math.hypot(k.x-P0.x,k.y-P0.y);if(d>40)txt('RAID',P0.x,P0.y-46-2*Math.sin(T*3),6,'#f2dcff');return}
  if(s.pOut){const o=s.pOut;if(s.hsr&&hsrList().length){ptSwirl(o.x,o.y,1,T,'#b388ff');return}const q=((s.t||0)-o.t0)/1.1;if(q>=0&&q<1)ptSwirl(o.x,o.y,1-q,T,'#b388ff');else s.pOut=null}}
 function ptHint(){const s=st;if(!s||s.raid||!s.rPortal||state!=='play'||!WT)return;const P0=s.rPortal,T=performance.now()/1000;(UPR=0,X.setTransform(D,0,0,D,0,0));
- const n=P0.hs?hsrList().length:0,t=P0.hs?'🌀 Ride into the portal · '+n+' raid'+(n>1?'s':'')+' await':'🌀 Ride into the portal to raid';
+ const t='🌀 Ride into the portal to raid';
  const fs=Math.min(17,W/24),tw=Math.min(W-24,fs*t.length*.62+30),y=H-232,pu=.5+.5*Math.sin(T*4.2);X.globalAlpha=.82;X.fillStyle='rgba(40,10,70,.85)';rr(X,W/2-tw/2,y-21,tw,42,14);X.fill();X.globalAlpha=.5+.5*pu;X.strokeStyle='#d7a8ff';X.lineWidth=2+pu*2;X.stroke();X.globalAlpha=1;txt(t,W/2,y,fs*(1+.04*pu),'#f2dcff');
  const sx=(P0.x*WT[0]+WT[2])/D,sy=((P0.y-20)*WT[1]+WT[3])/D,m=34,tp=150,bt=H-140;
  if(sx<m||sx>W-m||sy<tp||sy>bt){const cx=Math.max(m,Math.min(W-m,sx)),cy=Math.max(tp,Math.min(bt,sy)),an=Math.atan2(sy-cy||(sy-H/2),sx-cx||(sx-W/2));X.save();X.translate(cx,cy);X.rotate(an);X.globalAlpha=.75+.25*pu;X.fillStyle='#b388ff';X.strokeStyle='#fff';X.lineWidth=2.5;X.beginPath();X.moveTo(18+4*pu,0);X.lineTo(-10,-13);X.lineTo(-4,0);X.lineTo(-10,13);X.closePath();X.fill();X.stroke();X.restore();X.globalAlpha=1;txt('🌀',cx-Math.cos(an)*24,cy-Math.sin(an)*24,16,'#fff')}}
 {const _d=draw;draw=function(){const r=_d();try{ptHint()}catch(e){}return r}}
-{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.52';pn.appendChild(v)}}catch(e){}return r}}
+{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.53';pn.appendChild(v)}}catch(e){}return r}}
+// ==== FIRE RATE TREE combat (v18.53) — king arrows only; disabled in Portal Raids (trN false when s.raid)
+const FRR={sun:0,nova:0,vol:0,stc:0,th:0,fz:0,phx:0};
+function frOD(){return(st.rateX||1)*(trN('rate','overc')?1.1:1)}
+function frBurnPct(){return trN('rate','inferno')?.18:trN('rate','kindle')?.12:0}
+function frBurnT(){return trN('rate','inferno')?4:3}
+function frChill(){return trN('rate','perma')?[.18,2.5]:trN('rate','chill')?[.10,1.5]:null}
+function frStatN(){return trN('rate','conduit')?4:6}
+function frStatCh(){return 2+(trN('rate','cap')?1:0)+(trN('rate','conduit')?1:0)}
+function frStatD(){return trN('rate','super')?.35:trN('rate','cap')?.3:.25}
+function frAddBurn(e,amt){if(!e||e.hp<=0||amt<=0)return;e.kburn=(e.kburn||0)+amt;e.kbt=Math.max(e.kbt||0,frBurnT());if(GF().pt>=.5&&TRFX.length<80)TRFX.push({t:'fb',x1:e.x,y1:e.y-e.r,l:.3,ml:.3})}
+function frChillE(e,s,dur){if(!e||e.hp<=0)return;const B=isB(e.type),cap=B?.2:.4,add=B?s*.5:s;e.kcS=Math.min(cap,(e.kcS||0)+add);e.kcU=st.t+dur}
+function frChain(from,dmg0,n,canCrit){let cur=from,left=n;const hit_=new Set([from]);while(left-->0){let b=null,bd=40;for(const o of st.en){if(o.hp<=0||hit_.has(o))continue;const d=dist(o.x,o.y,cur.x,cur.y);if(d<bd){bd=d;b=o}}if(!b)break;hit_.add(b);const cr=canCrit&&R()<st.crit+CRC();const d=dmg0*(cr?st.cm+CRD():1);hit(b,d,cr,2);if(TRFX.length<80)TRFX.push({t:'ch',x1:cur.x,y1:cur.y-cur.r,x2:b.x,y2:b.y-b.r,l:.22,ml:.22,c:'#a0e0ff'});ST_tr('frch');cur=b}}
+function frBoom(x,y,d,r,col){for(const e of st.en)if(e.hp>0&&dist(e.x,e.y,x,y)<r+e.r)hit(e,d,0,2);if(GF().pt>=.4){ring(x,y,col||'#ff9100',r);for(let i=0;i<8;i++){const a=R()*TAU,v=rnd(20,70);part({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-10,l:.5,ml:.5,c:col||'#ff7a00',s:rnd(1.2,2.5),add:1})}}}
+function frOnDeath(e){const s=st;if(!s||s.raid)return;const B=isB(e.type);
+ if(trN('rate','combust')&&e.kburn>0){frBoom(e.x,e.y-e.r,st.dmg*frOD()*.4,16,'#ff6d00');ST_tr('combust')}
+ if(trN('rate','wild')&&e.kburn>0){let b=null,bd=1e9;for(const o of s.en){if(o===e||o.hp<=0)continue;const d=dist(o.x,o.y,e.x,e.y);if(d<bd){bd=d;b=o}}if(b){frAddBurn(b,e.kburn*.5);ST_tr('wild')}}
+ if(trN('rate','shatter')&&!B&&(e.frU>s.t||(e._sl||0)>=.3)&&e.hp<=0){/*shatter already forces kill below*/}}
+function frShatterCheck(e){const s=st;if(!trN('rate','shatter')||!e||e.hp<=0||isB(e.type))return;if(!(e.frU>s.t||(e._sl||0)>=.3||(e.kcU>s.t&&(e.kcS||0)>=.3)))return;if(e.hp>=.12*e.mhp)return;e.hp=0;num(e.x,e.y-e.r*2.6-6,'SHATTER','#b3ecff',7);frBoom(e.x,e.y-e.r,st.dmg*frOD()*.5,16,'#b3ecff');ST_tr('shatter')}
+function frHit(a,e){const s=st;if(!s||s.raid||!a||!e||!(a.king||a.fr))return;const t=s.t,B=isB(e.type),od=frOD(),base=a.dmg;
+ const bp=frBurnPct();if(bp)frAddBurn(e,base*bp);
+ const ch=frChill();if(ch)frChillE(e,ch[0],ch[1]);
+ if(a.frSh){let b=null,bd=30;for(const o of s.en){if(o===e||o.hp<=0)continue;const d=dist(o.x,o.y,e.x,e.y);if(d<bd){bd=d;b=o}}if(b){hit(b,base*.6,0,1);if(TRFX.length<80)TRFX.push({t:'ch',x1:e.x,y1:e.y-e.r,x2:b.x,y2:b.y-b.r,l:.2,ml:.2,c:'#d0f4ff'});ST_tr('shards')}}
+ if(a.frSt){frChain(e,base*frStatD(),frStatCh(),trN('rate','super'))}
+ if(a.frTh){frBoom(e.x,e.y-e.r,base*1.0,20,'#a0e0ff');for(const o of s.en)if(o.hp>0&&!isB(o.type)&&dist(o.x,o.y,e.x,e.y)<20+o.r)o.stun=Math.max(o.stun||0,.3);ST_tr('thunder')}
+ if(a.frFz&&!B){if(!(e.fzCd>t)){e.stun=Math.max(e.stun||0,.8);e.frU=t+.8;e.fzCd=t+4;ST_tr('freeze')}}
+ if(a.frSun){frBoom(e.x,e.y-e.r,base,30,'#ffe066');s.burn=s.burn||[];if(s.burn.length<24)s.burn.push({x:e.x,y:e.y,r:22,t:3.5,dps:base*.1,tk:0});ST_tr('sunfire')}
+ if(a.frPhx){fireBlast(e.x,e.y-e.r,base);ST_tr('phoenix')}
+ if(a.frTmp){let cur=e;for(let i=0;i<5;i++){let b=null,bd=50;for(const o of s.en){if(o===cur||o.hp<=0)continue;const d=dist(o.x,o.y,cur.x,cur.y);if(d<bd){bd=d;b=o}}if(!b)break;hit(b,base*.4,0,2);if(TRFX.length<80)TRFX.push({t:'ch',x1:cur.x,y1:cur.y-cur.r,x2:b.x,y2:b.y-b.r,l:.28,ml:.28,c:'#7c4dff'});cur=b}ST_tr('tempest')}
+ frShatterCheck(e);
+ if(e.hp<=0)frOnDeath(e)}
+function frTag(a){const s=st;if(!s||s.raid||!a)return;a.king=1;a.fr=1;const t=s.t;
+ // Overcharge: bake into this arrow's damage once
+ if(trN('rate','overc')&&!a._oc){a.dmg*=1.1;a._oc=1}
+ FRR.stc=(FRR.stc||0)+1;if(trN('rate','static')&&FRR.stc%frStatN()===0)a.frSt=1;
+ FRR.th=(FRR.th||0)+1;if(trN('rate','thunder')&&FRR.th%10===0)a.frTh=1;
+ FRR.fz=(FRR.fz||0)+1;if(trN('rate','freeze')&&FRR.fz%12===0)a.frFz=1;
+ if(trN('rate','shards'))a.frSh=1;
+ // Phoenix: without fire artifact, every 12th is a blast; with it, accelerate below
+ if(trN('rate','phoenix')&&!aS('fire')){FRR.phx=(FRR.phx||0)+1;if(FRR.phx%12===0)a.frPhx=1}
+ // Sunfire bolt
+ if(trN('rate','sunfire')&&t>=(FRR.sun||0)){FRR.sun=t+12;a.frSun=1;a.dmg*=2.5;if(TRFX.length<80)TRFX.push({t:'sf',x1:a.x,y1:a.y,l:.5,ml:.5})}
+ // Tempest every 5th volley (count once per volley via multi index 0)
+ if(trN('rate','tempest')&&a._vi===0){FRR.vol=(FRR.vol||0)+1;if(FRR.vol%6===0)a.frTmp=1}
+ if(!a._frH){a._frH=1;const prev=a.onHit;a.onHit=function(e){if(prev)prev(e);frHit(a,e)}}}
+// Wrap kingShoot to tag arrows + Phoenix artifact acceleration
+{const _ks=kingShoot;kingShoot=function(k){const s=st;if(!s||s.raid)return _ks(k);
+ // Phoenix Arrows: temporarily shorten Dragonfire interval by 2 (min every 2nd)
+ let saved=null;if(trN('rate','phoenix')){const fa=aS('fire');if(fa){saved=AV.fireN[fa];AV.fireN[fa]=Math.max(2,saved-2)}}
+ const n0=s.ar.length;const r=_ks(k);
+ if(saved!=null){const fa=aS('fire');AV.fireN[fa]=saved}
+ for(let i=n0;i<s.ar.length;i++){s.ar[i]._vi=i-n0;frTag(s.ar[i])}
+ return r}}
+// Arrow collision: after onHit, run frHit for king arrows
+{const _u=upd;upd=function(dt){const s=st;if(!s||s.raid)return _u(dt);
+ // Absolute Zero nova
+ if(trN('rate','azero')){if(s.t>=(FRR.nova||0)){FRR.nova=s.t+15;for(const e of s.en){if(e.hp<=0)continue;if(isB(e.type)){e.azU=s.t+3}else{e.stun=Math.max(e.stun||0,1.2);e.frU=s.t+1.2}}if(GF().pt>=.4){ring(CX,WALLY-40,'#b3ecff',120);ring(CX,WALLY-40,'#e6fbff',80)}pop('🧊 ABSOLUTE ZERO','#b3ecff');ST_tr('azero');Snd.sfx('roar')}}
+ // Snapshot burns for death processing
+ const snap=s.en.filter(e=>e.kburn>0||(e.kcU>s.t)).map(e=>({e,hp:e.hp,burn:e.kburn||0}));
+ const r=_u(dt);
+ // Burn DoT tick
+ for(const e of s.en){if(e.hp<=0||!(e.kburn>0)||!(e.kbt>0))continue;const tick=Math.min(e.kburn,e.kburn*(dt/Math.max(.2,e.kbt)));e.kburn-=tick;e.kbt-=dt;if(tick>0){const pre=e.hp;hit(e,tick,0,1);if(e.hp<=0)frOnDeath(e)}if(GF().pt>=.55&&R()<dt*6)part({x:e.x+rnd(-e.r,e.r)*.5,y:e.y-e.r+rnd(-4,4),vx:rnd(-8,8),vy:rnd(-40,-12),l:.4,ml:.4,c:R()<.5?'#ff6d00':'#ffca28',s:rnd(1,2),add:1})}
+ // Deaths that happened inside _u (filter removed them) — use snap
+ for(const q of snap){if(q.e.hp<=0||s.en.indexOf(q.e)<0){if(q.burn>0){q.e.kburn=q.burn;frOnDeath(q.e)}}}
+ // Permafrost: chill enemies that just hit the gate
+ if(trN('rate','perma')){for(const e of s.en){if(e.hp<=0)continue;if(e._gh&&e._gh<s.gateHits)frChillE(e,.08,2);e._gh=s.gateHits||0}}
+ return r}}
+// Amp already extended in tree.js; hit wrapper already applies trAmp
+// Draw: burn flames on enemies + sunfire/tempest FX (extend trDrawW)
+{const _d=trDrawW;trDrawW=function(){_d();const s=st;if(!s||s.raid||!s.tr)return;const t=s.t,gf=GF();if(gf.pt<.35)return;X.save();
+ for(const e of s.en){if(e.hp<=0)continue;if(e.kburn>0){X.globalAlpha=.45+.2*Math.sin(t*10);X.fillStyle='#ff6d00';for(let i=0;i<3;i++){const x=e.x+(i-1)*3.5,y=e.y-e.r*2.2-4-2*Math.sin(t*8+i);X.beginPath();X.moveTo(x,y+5);X.quadraticCurveTo(x-2.5,y+2,x,y-3);X.quadraticCurveTo(x+2.5,y+2,x,y+5);X.fill()}}
+  if(e.kcU>t&&!(e.frU>t)){X.globalAlpha=.25;X.fillStyle='#a8e6ff';X.beginPath();X.ellipse(e.x,e.y,e.r+3,(e.r+3)*.5,0,0,TAU);X.fill()}}
+ for(let i=TRFX.length-1;i>=0;i--){const f=TRFX[i];if(f.t==='fb'){X.globalAlpha=f.l/f.ml*.6;X.fillStyle='#ff9100';X.beginPath();X.arc(f.x1,f.y1,4*(f.l/f.ml),0,TAU);X.fill()}
+  if(f.t==='sf'){X.globalAlpha=f.l/f.ml;X.strokeStyle='#ffe066';X.lineWidth=2;X.beginPath();X.arc(f.x1,f.y1,10+8*(1-f.l/f.ml),0,TAU);X.stroke()}}
+ X.restore();X.globalAlpha=1}}
+// Hook arrow onHit path: after tower trTH, also frHit for king
+{const _h=hit;hit=function(e,d,cr,q){const pre=e?e.hp:0;const r=_h(e,d,cr,q);return r}
+ // Patch via wrapping the arrow filter is already done in build for towers.
+ // Add a global last-arrow tag: wrap the collision by monkeypatching after trees load.
+}
+// Safer: wrap the existing arrow hit by intercepting when home king arrow hits — use a Mutation on ar via a once-per-frame scan of recent hits is too fragile.
+// Instead monkeypatch the arrow update by re-wrapping upd's internal — we already tag arrows; install an onHit.
+{const _ks2=kingShoot; /* already wrapped */ }
+// Install onHit on tagged arrows each frame before physics
+{const _f=frame;frame=function(dt){const s=st;if(s&&!s.raid&&s.ar)for(const a of s.ar){if((a.king||a.fr)&&!a._frH){a._frH=1;const prev=a.onHit;a.onHit=function(e){if(prev)prev(e);frHit(a,e)}}}return _f(dt)}}
+// Current Stats: rate tree rows (build.py will call trStatRows('rate',row) if present)
 // ==== MYTHIC ARTIFACTS (v18.52): stars 6-10 for scaling artifacts, steep point costs, diminishing gains
 function MYC(s){return[0,0,0,0,0,0,15,25,40,60,85][s]||0}
 const MYTH={crown:{crown:[.58,.65,.71,.76,.80]},hoard:{hG:[.58,.65,.71,.76,.80]},fire:{fireA:[1.75,1.88,2,2.1,2.2],fireB:[.44,.48,.51,.54,.56]},bast:{bRf:[.9,1,1.08,1.15,1.2],bRg:[.0165,.018,.019,.02,.021]},ban:{banH:[1.15,1.3,1.42,1.52,1.6]}};
