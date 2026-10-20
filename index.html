@@ -1854,7 +1854,7 @@ function ptHint(){const s=st;if(!s||s.raid||!s.rPortal||state!=='play'||!WT)retu
  const sx=(P0.x*WT[0]+WT[2])/D,sy=((P0.y-20)*WT[1]+WT[3])/D,m=34,tp=150,bt=H-140;
  if(sx<m||sx>W-m||sy<tp||sy>bt){const cx=Math.max(m,Math.min(W-m,sx)),cy=Math.max(tp,Math.min(bt,sy)),an=Math.atan2(sy-cy||(sy-H/2),sx-cx||(sx-W/2));X.save();X.translate(cx,cy);X.rotate(an);X.globalAlpha=.75+.25*pu;X.fillStyle='#b388ff';X.strokeStyle='#fff';X.lineWidth=2.5;X.beginPath();X.moveTo(18+4*pu,0);X.lineTo(-10,-13);X.lineTo(-4,0);X.lineTo(-10,13);X.closePath();X.fill();X.stroke();X.restore();X.globalAlpha=1;txt('🌀',cx-Math.cos(an)*24,cy-Math.sin(an)*24,16,'#fff')}}
 {const _d=draw;draw=function(){const r=_d();try{ptHint()}catch(e){}return r}}
-{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.60';pn.appendChild(v)}}catch(e){}return r}}
+{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.61';pn.appendChild(v)}}catch(e){}return r}}
 // ==== FIRE RATE TREE combat (v18.53) — king arrows only; disabled in Portal Raids (trN false when s.raid)
 const FRR={sun:0,nova:0,vol:0,stc:0,th:0,fz:0,phx:0};
 function frOD(){return(st.rateX||1)*(trN('rate','overc')?1.1:1)}
@@ -2040,7 +2040,7 @@ function gmRel(){const need=Math.ceil(.8*trLv('bow')),miss=Math.max(0,need-gmL()
 function gmDmg(){const l=gmL();return trKA()*(2.5+.03*l)*gmRel().rel*(gmN('mpyro')?1.3:1)}
 function gmCD(){const l=gmL();return Math.max(2,6-.03*Math.max(0,l-10))*(gmN('mquick')?.75:1)*(gmN('mchrono')?.75:1)}
 function gmShP(){return gmN('mward')?(gmN('mbast')?.15:.06):gmN('mbast')?.10:0}
-const GMX=()=>CX,GMY=()=>WALLY-55;
+const GMX=()=>CX,GMY=()=>WALLY-55,GMK=.66; // v18.61: mage scaled to ~soldier/king proportion
 function gmCol(){const t=(st.tr&&st.tr.gate)||[];const c=[0,0,0];t.forEach(id=>{if(id&&TRID[id])c[TRID[id].j]++});const m=Math.max(...c);return m?c.indexOf(m):-1}
 function gmTargets(n,ex){const s=st,x0=CX,y0=WALLY,a=[];for(const e of s.en){if(e.hp<=0||e===ex)continue;const d=dist(e.x,e.y,x0,y0);if(d<230)a.push([d,e])}a.sort((p,q)=>p[0]-q[0]);return a.slice(0,n).map(p=>p[1])}
 function gmHit(e,d,cr,q){if(!e||e.hp<=0)return;const h0=e.hp;e.gmK=1;hit(e,d,cr,q||2);GMR.dmg+=Math.min(h0,h0-e.hp);if(e.hp>0)e.gmK=0;else if(gmN('msiph'))GMR.cd-=.6}
@@ -2052,7 +2052,7 @@ function gmImpact(p){const s=st,e=p.e&&p.e.hp>0?p.e:null,x=e?e.x:p.x,y=e?e.y-e.r
  if(gmN('mchn')&&e){let prev=e;const hitL=[e];for(let i=0;i<3;i++){let b=null,bd=60;for(const o of s.en){if(o.hp<=0||hitL.includes(o))continue;const d=dist(o.x,o.y,prev.x,prev.y);if(d<bd){bd=d;b=o}}if(!b)break;hitL.push(b);gmHit(b,p.D*.5,0,1);gmSlow(b);if(TRFX.length<70)TRFX.push({t:'ch',x1:prev.x,y1:prev.y-prev.r,x2:b.x,y2:b.y-b.r,l:.25,ml:.25});prev=b}}}
 function gmMeteor(e,D,dl){const x=e?e.x+rnd(-4,4):CX+rnd(-60,60),y=e?e.y:WALLY-rnd(40,140);GMR.M.push({x,y,t:-(dl||0),T:.5,D})}
 function gmLand(m){const s=st;let n=0;for(const o of s.en){if(o.hp<=0)continue;if(dist(o.x,o.y,m.x,m.y)<34+o.r*.4){gmHit(o,m.D,0,1);if(!isB(o.type))o.stun=Math.max(o.stun||0,.6);n++}}s.shake=Math.max(s.shake||0,.22);const gf=GF();ring(m.x,m.y,'#ffab40',34);ring(m.x,m.y,'#fff3e0',18);burst(m.x,m.y-4,'#ff6d00',gf.pt>=.5?18:6,110,1);smoke(m.x,m.y,gf.pt>=.5?8:3,1.6);Snd.sfx('mmet');ST_tr('mmet',n)}
-function gmShot(e,D,cr){const kind=gmN('mfb')?'fb':gmN('mchn')?'ln':gmN('mhex')?'ic':'ar',c={fb:'#ff9100',ln:'#80d8ff',ic:'#b3ecff',ar:'#b388ff'}[kind];GMR.P.push({x:GMX()+6,y:GMY()-25,e,x1:e.x,y1:e.y-e.r,D,cr,kind,c,l:1.6})}
+function gmShot(e,D,cr){const kind=gmN('mfb')?'fb':gmN('mchn')?'ln':gmN('mhex')?'ic':'ar',c={fb:'#ff9100',ln:'#80d8ff',ic:'#b3ecff',ar:'#b388ff'}[kind];GMR.P.push({x:GMX()+6*GMK,y:GMY()-25*GMK,e,x1:e.x,y1:e.y-e.r,D,cr,kind,c,l:1.6})}
 function gmCast(){const s=st,ts=gmTargets(2);if(!ts.length)return false;const e=ts[0];let D=gmDmg(),cr=0;if(gmN('msurge')&&R()<s.crit+CRC()){cr=1;D*=s.cm+CRD()}
  GMR.n++;GMR.casts++;GMR.cT=.4;gmShot(e,D,cr);if(gmN('mtwin')&&ts[1])gmShot(ts[1],D*.5,cr);
  if(gmN('mmet')&&GMR.n%4===0)gmMeteor(e,D*2,.15);
@@ -2118,10 +2118,10 @@ function gmDraw(){const s=st;if(!s||s.raid||!GMR.on||!gmOn())return;const T=perf
  // ward dome
  if(GMR.sh>0){const a=Math.min(1,GMR.sh/(gmShP()*s.gate.mhp||1)),f=GMR.shF;X.globalAlpha=(.07+.05*a)+f*.3;X.fillStyle='#80d8ff';X.beginPath();X.ellipse(CX,WALLY-14,40,34,0,Math.PI,TAU);X.fill();X.globalAlpha=.35+.25*a+f;X.strokeStyle='#b3e5fc';X.lineWidth=1.2;X.stroke()}
  // rune circle while casting
- X.globalAlpha=ga;if(GMR.cT>0&&gf.pt>=.5){const a=GMR.cT/.4;X.globalAlpha=a*.9*ga;X.strokeStyle=GMPAL[pi<0?3:pi][3];X.lineWidth=.8;X.beginPath();X.ellipse(mx,my,11,4,0,0,TAU);X.stroke();for(let i=0;i<6;i++){const q=T*3+i*TAU/6;X.fillStyle=X.strokeStyle;X.fillRect(mx+Math.cos(q)*11-.7,my+Math.sin(q)*4-.7,1.4,1.4)}}
- X.globalAlpha=ga;blit(MAGE(pi,GMR.cT>0?1:0),mx,my);
+ X.globalAlpha=ga;if(GMR.cT>0&&gf.pt>=.5){const a=GMR.cT/.4;X.globalAlpha=a*.9*ga;X.strokeStyle=GMPAL[pi<0?3:pi][3];X.lineWidth=.8;X.beginPath();X.ellipse(mx,my,11*GMK,4*GMK,0,0,TAU);X.stroke();for(let i=0;i<6;i++){const q=T*3+i*TAU/6;X.fillStyle=X.strokeStyle;X.fillRect(mx+Math.cos(q)*11*GMK-.6,my+Math.sin(q)*4*GMK-.6,1.2,1.2)}}
+ X.globalAlpha=ga;blit(MAGE(pi,GMR.cT>0?1:0),mx,my,0,GMK,GMK);
  // staff orb (live glow)
- const ox=mx+(GMR.cT>0?9:7),oy=my+(GMR.cT>0?-33.5:-28.5),pu=1+.15*Math.sin(T*5)+(GMR.cT>0?.6*GMR.cT/.4:0)+(GMR.cd<.5?.2:0);X.globalAlpha=Math.min(1,.85*ga);if(gf.pt>=.5)X.globalCompositeOperation='lighter';blit(MORB(pi),ox,oy,0,.45*pu,.45*pu);X.globalCompositeOperation='source-over';
+ const ox=mx+(GMR.cT>0?9:7)*GMK,oy=my+(GMR.cT>0?-33.5:-28.5)*GMK,pu=1+.15*Math.sin(T*5)+(GMR.cT>0?.6*GMR.cT/.4:0)+(GMR.cd<.5?.2:0);X.globalAlpha=Math.min(1,.85*ga);if(gf.pt>=.5)X.globalCompositeOperation='lighter';blit(MORB(pi),ox,oy,0,.36*pu,.36*pu);X.globalCompositeOperation='source-over';
  // projectiles
  for(const p of GMR.P){X.globalAlpha=1;if(gf.pt>=.5)X.globalCompositeOperation='lighter';const sc=p.kind==='fb'?.75:.55;blit(MORB(p.kind==='fb'?0:p.kind==='ln'?1:2),p.x,p.y,0,sc,sc);X.globalCompositeOperation='source-over';X.fillStyle='#fff';X.beginPath();X.arc(p.x,p.y,1.2,0,TAU);X.fill();if(gf.pt>=.5&&R()<.5)part({x:p.x,y:p.y,vx:rnd(-8,8),vy:rnd(-8,8),l:.3,ml:.3,c:p.c,s:rnd(.8,1.6),add:1})}
  // meteors
