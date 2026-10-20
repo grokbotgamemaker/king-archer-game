@@ -29,4 +29,7 @@ MIT License text (FluidR3_GM):
 | music/boss.m4a | 51.2 s | 16th-note Phrygian cello/bass grind, tuba, tremolo strings, full "aah" choir, taiko, timpani, toms, kit (snare/kick/crash), trombone stabs, brass section, French-horn motif |
 | music/raid.m4a | 61.44 s | galloping cello/contrabass march, string ensemble, "ooh" choir, bagpipe drone, snare-drum march rudiments, kick, taiko, timpani, horn fanfare, trombones, solo fiddle |
 
+Tempos / modes: Defend 120 bpm (D Aeolian with a Phrygian Eb break), Boss 150 bpm (D Phrygian), Raid 125 bpm march (D minor/Dorian with bagpipe drone).
+In game the Defend battle layer sits at 30% between waves and rises to 100% as waves get harder.
+
 Composition & production: King Archer (grokbotgamemaker), 2026.
