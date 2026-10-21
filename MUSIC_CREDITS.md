@@ -28,8 +28,12 @@ MIT License text (FluidR3_GM):
 | music/defend_battle.m4a (layer) | 96 s | taiko, timpani (rolls), melodic toms, trombones & brass-section power stabs, French-horn war-horn call, "aah" choir |
 | music/boss.m4a | 51.2 s | 16th-note Phrygian cello/bass grind, tuba, tremolo strings, full "aah" choir, taiko, timpani, toms, kit (snare/kick/crash), trombone stabs, brass section, French-horn motif |
 | music/raid.m4a | 61.44 s | galloping cello/contrabass march, string ensemble, "ooh" choir, bagpipe drone, snare-drum march rudiments, kick, taiko, timpani, horn fanfare, trombones, solo fiddle |
+| music/buildup_base.m4a | 12.8 s (8 bars) | boss-wave buildup: accelerating taiko heartbeat, low tremolo strings (D2/A2 + Eb3), contrabass pedal, low "ooh" choir, rim clicks |
+| music/buildup_rise.m4a (layer) | 12.8 s | rising intensity layer: accelerating timpani, chromatic tremolo string cluster climbing D4→C5, "aah" choir swell, distant French-horn war calls, trombone crescendo + tom fill |
+| music/boss_hit.m4a (one-shot) | 4.6 s | boss-spawn impact on the downbeat: timpani + taiko, crash/china cymbal, brass/trombone/horn stab, choir, contrabass, orchestra hit |
 
-Tempos / modes: Defend 120 bpm (D Aeolian with a Phrygian Eb break), Boss 150 bpm (D Phrygian), Raid 125 bpm march (D minor/Dorian with bagpipe drone).
+Tempos / modes: Defend 120 bpm (D Aeolian with a Phrygian Eb break), Boss 150 bpm (D Phrygian), Raid 125 bpm march (D minor/Dorian with bagpipe drone), Boss buildup 150 bpm (D Phrygian).
+Boss waves (every 5th wave) open with the buildup; its rise layer swells over ~26 s, and the impact + boss loop hit the moment the boss spawns (at least 3 s of rise first).
 In game the Defend battle layer sits at 30% between waves and rises to 100% as waves get harder.
 
 Composition & production: King Archer (grokbotgamemaker), 2026.
