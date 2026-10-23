@@ -1628,16 +1628,16 @@ barracks:{nm:'Barracks',ic:'⚔️',lv:TRT,br:[['⚔️','Vanguard'],['🛡️',
 [['cleave','Cleave','Hits splash 35% to 1 adjacent enemy'],['hold','Hold the Line','While ≥4 soldiers live, gate takes −25% dmg'],['swift','Swift Muster','−30% respawn time; new soldiers get a 2s shield']],
 [['exec','Execute','Slay non-bosses below 12% HP (bosses take +50% there)'],['taunt','Taunt','Enemies within 40 must fight soldiers first; soldier HP +30%'],['bash','Shield Bash','Every 4th hit stuns 0.8s (bosses 0.2s, 3s immunity)']],
 [['rally','Rally Banner','Soldiers +20% dmg; king +10% dmg within 120 of 3+ soldiers'],['guard','Gate Guard','Soldiers absorb 20% of gate damage with their HP'],['bmust','Bulwark Muster','+2 soldier cap']],
-[['last','Last Stand','Soldiers below 30% HP deal ×2 and take −50%'],['medic','Field Medic','Gate regenerates 0.5% max HP/s while a soldier lives'],['sunder','Sunder','Soldier hits apply Armor Shred (shared stacks & cap)']],
+[['last','Last Stand','Soldiers below 30% HP deal ×2 and take −50%'],['medic','Field Medic','Gate regenerates 0.5% max HP/s while a soldier lives'],['sunder','Sunder','Soldier hits apply Armor Shred (shared ×10 stacks)']],
 [['smast','Arsenal Mastery','Arsenal Link 15% → 20%'],['phal','Phalanx','While ≥8 soldiers live, gate takes −35% dmg'],['champ','Champion','One soldier is a Champion: ×4 HP, ×4 dmg, cleave; back 10s after falling']],
 [['fury',"Warlord's Fury",'Each soldier kill: +2% soldier dmg this wave (max +60%)'],['unbr','Unbreakable Gate',"Once per wave the gate can't drop below 1 HP for 5s while a soldier lives"],['legion','Legion of the Crown','+4 soldier cap; Link +1 point per 10 barracks levels above 100 (max +10)']]]},rate:{nm:'Fire Rate',ic:'⚡',lv:[45,55,65,75,90,105,120],br:[['🔥','Fire'],['❄️','Ice'],['⚡','Storm']],t:[
 [['kindle','Kindle','Each arrow adds 12% of its damage as burn over 3s (stacks)'],['chill','Chill','Arrows slow 10% for 1.5s (bosses 5%)'],['static','Static','Every 6th arrow chains to 2 nearby enemies for 25%']],
-[['flash','Flashpoint','Burning enemies take +8% king damage (amp cap)'],['frostbite','Frostbite','Chilled enemies take +10% king damage (amp cap)'],['cap','Capacitor','Static chains +1 target, chain damage 30%']],
+[['flash','Flashpoint','Burning enemies take +8% king damage (stacks with all amps)'],['frostbite','Frostbite','Chilled enemies take +10% king damage (stacks with all amps)'],['cap','Capacitor','Static chains +1 target, chain damage 30%']],
 [['combust','Combustion','Burning enemies explode on death for 40% arrow damage, r16'],['shards','Ice Shards','Hits on chilled enemies pierce to 1 more for 60%'],['overc','Overcharge','Overdrive multiplier ×1.10']],
 [['wild','Wildfire','On death, 50% of remaining burn jumps to the nearest enemy'],['freeze','Deep Freeze','Every 12th arrow freezes target 0.8s (4s CD; bosses immune)'],['thunder','Thunderclap','Every 10th arrow: lightning 100% damage r20, 0.3s stun (not bosses)']],
 [['inferno','Inferno','Burn 12%→18% of hit damage, lasts 4s'],['shatter','Shatter','Non-bosses that are frozen or ≥30% slowed and under 12% HP shatter (die), spray 50% r16'],['conduit','Storm Conduit','Static every 4th arrow (from 6th), +1 chain']],
 [['phoenix','Phoenix Arrows','Dragonfire fires 2 shots sooner (min every 2nd); without it, every 12th arrow is a fire blast (80% r22)'],['perma','Permafrost','Chill 10%→18%, 2.5s; enemies hitting the gate are chilled +8% (40% cap)'],['super','Supercell','Chain lightning can crit; chain damage 35%']],
-[['sunfire','Sunfire','Every 12s the next arrow is a Sunfire Bolt: 250% damage r30, leaves 3.5s fire (burn 10%/s)'],['azero','Absolute Zero','Every 15s frost nova: freezes non-bosses 1.2s, bosses slowed 20% for 3s; frozen take +15% (amp cap)'],['tempest','Tempest','Every 6th volley launches ball lightning that bounces 5× for 40% each']]]}};
+[['sunfire','Sunfire','Every 12s the next arrow is a Sunfire Bolt: 250% damage r30, leaves 3.5s fire (burn 10%/s)'],['azero','Absolute Zero','Every 15s frost nova: freezes non-bosses 1.2s, bosses slowed 20% for 3s; frozen take +15% (stacks with all amps)'],['tempest','Tempest','Every 6th volley launches ball lightning that bounces 5× for 40% each']]]}};
 
 const TRID={};for(const k in TRE)TRE[k].t.forEach((r,i)=>r.forEach((n,j)=>TRID[n[0]]={k,i,j,n}));
 let TRTA=0;const TRR={sT:12,sOn:0,dT:6,chT:0,hadCh:0},TRFX=[];
@@ -1667,7 +1667,7 @@ function trTH(a,e){const t=st.t,B=isB(e.type);
  if(a.chn){a.chn=0;let b=null,bd=40;for(const o of st.en){if(o===e||o.hp<=0)continue;const d=dist(o.x,o.y,e.x,e.y);if(d<bd){bd=d;b=o}}if(b){hit(b,a.dmg*.5*trTM(a,b),0,2);if(TRFX.length<60)TRFX.push({t:'ch',x1:e.x,y1:e.y-e.r,x2:b.x,y2:b.y-b.r,l:.22,ml:.22});ST_tr('chain')}}
  if(trN('tower','shrap')){let n=0;for(const o of st.en){if(o===e||o.hp<=0)continue;if(dist(o.x,o.y,e.x,e.y)<18+o.r*.5){hit(o,a.dmg*.35,0,1);n++}}if(TRFX.length<60)TRFX.push({t:'sp',x1:e.x,y1:e.y-e.r,l:.25,ml:.25});if(n)ST_tr('shrap')}
  if(a.pc>0){a.pc--;(a.hs=a.hs||[]).push(e);a.t=null;return true}return false}
-function trAmp(e){const t=st.t;let a=0;if(e.shU>t)a+=.02*(e.shN||0);if(e.mkU>t)a+=.15;if(trN('tower','glac')&&(e._sl>0||e.frU>t||e.dfU>t))a+=.25;if(trN('rate','flash')&&e.kburn>0)a+=.08;if(trN('rate','frostbite')&&e.kcU>t)a+=.10;if(trN('rate','azero')&&e.frU>t)a+=.15;if(e.gwU>t)a+=.12;return Math.min(.35,a)}
+function trAmp(e){const t=st.t;let a=0;if(e.shU>t)a+=.02*(e.shN||0);if(e.mkU>t)a+=.15;if(trN('tower','glac')&&(e._sl>0||e.frU>t||e.dfU>t))a+=.25;if(trN('rate','flash')&&e.kburn>0)a+=.08;if(trN('rate','frostbite')&&e.kcU>t)a+=.10;if(trN('rate','azero')&&e.frU>t)a+=.15;if(e.gwU>t)a+=.12;return a}
 function trSolHit(o,t,d,cr){const s=st,B=isB(t.type);let m=1;if(trN('barracks','last')&&o.hp<.3*o.mhp)m*=2;if(o.ch)m*=4;if(trN('barracks','fury'))m*=1+Math.min(.6,.02*((s.trw&&s.trw.fu)||0));if(trN('barracks','exec')&&B&&t.hp<.12*t.mhp)m*=1.5;if(trN('gate','mbless'))m*=1.25;
  hit(t,d*m,cr);
  if(trN('barracks','sunder'))trShred(t);
@@ -1710,7 +1710,7 @@ function trGateRed(n){let o=0;if(trN('barracks','hold')&&n>=4)o+=.25;if(trN('bar
  for(let i=TRFX.length-1;i>=0;i--)if((TRFX[i].l-=dt)<=0)TRFX.splice(i,1);
 }}
 // damage-taken amplifiers (home only)
-{const _h=hit;hit=function(e,d,cr,q){if(st&&!st.raid&&e&&(e.shU||e.mkU||e._sl||e.frU||e.dfU||e.gwU)){const a=trAmp(e);if(a>0)d*=1+a}return _h(e,d,cr,q)}}
+{const _h=hit;hit=function(e,d,cr,q){if(st&&!st.raid&&e&&(e.shU||e.mkU||e._sl||e.frU||e.dfU||e.gwU||e.kburn||e.kcU)){const a=trAmp(e);if(a>0)d*=1+a}return _h(e,d,cr,q)}}
 // stat counters for testing
 const TRST={};function ST_tr(k,n){TRST[k]=(TRST[k]||0)+(n||1)}
 // world overlay
@@ -1854,7 +1854,7 @@ function ptHint(){const s=st;if(!s||s.raid||!s.rPortal||state!=='play'||!WT)retu
  const sx=(P0.x*WT[0]+WT[2])/D,sy=((P0.y-20)*WT[1]+WT[3])/D,m=34,tp=150,bt=H-140;
  if(sx<m||sx>W-m||sy<tp||sy>bt){const cx=Math.max(m,Math.min(W-m,sx)),cy=Math.max(tp,Math.min(bt,sy)),an=Math.atan2(sy-cy||(sy-H/2),sx-cx||(sx-W/2));X.save();X.translate(cx,cy);X.rotate(an);X.globalAlpha=.75+.25*pu;X.fillStyle='#b388ff';X.strokeStyle='#fff';X.lineWidth=2.5;X.beginPath();X.moveTo(18+4*pu,0);X.lineTo(-10,-13);X.lineTo(-4,0);X.lineTo(-10,13);X.closePath();X.fill();X.stroke();X.restore();X.globalAlpha=1;txt('🌀',cx-Math.cos(an)*24,cy-Math.sin(an)*24,16,'#fff')}}
 {const _d=draw;draw=function(){const r=_d();try{ptHint()}catch(e){}return r}}
-{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.67';pn.appendChild(v)}}catch(e){}return r}}
+{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.68';pn.appendChild(v)}}catch(e){}return r}}
 // ==== FIRE RATE TREE combat (v18.53) — king arrows only; disabled in Portal Raids (trN false when s.raid)
 const FRR={sun:0,nova:0,vol:0,stc:0,th:0,fz:0,phx:0};
 function frOD(){return(st.rateX||1)*(trN('rate','overc')?1.1:1)}
@@ -1970,7 +1970,7 @@ const OBS=[
  ['arb','🌳','Arborist','Upgrade trees: Lv1 a 2nd free swap each run · Lv2 full reset 150% → 75% · Lv3 Arsenal Link +2%',3,l=>[7.5e5,4e6,1.5e7][l],l=>[24,48,48][l]*H_,l=>['—','2 free swaps per run','2 free swaps · reset 75%','2 free swaps · reset 75% · Link +2%'][l],3],
  ['sie','🏰','Siege Engineering','Towers +5% damage per level',5,l=>2.5e5*Math.pow(1.8,l),l=>Math.min(48,24*(1+.25*l))*H_,l=>'+'+5*l+'% tower damage',3],
  ['rcp','⚔️','Raid Captaincy','Portal Raids only: king +3% damage, +3% effective HP and +3% checkpoint healing per level',5,l=>4e5*Math.pow(1.9,l),l=>Math.min(48,24*(1+.25*l))*H_,l=>'raids: +'+3*l+'% dmg · +'+3*l+'% HP · +'+3*l+'% heal',3],
- ['ele','🔥','Elemental Studies','Fire Rate tree: +4% burn/chain/blast damage and +8% burn/chill/freeze duration per level (slow & amp caps unchanged)',5,l=>3e5*Math.pow(2,l),l=>Math.min(48,24*(1+.25*l))*H_,l=>'+'+4*l+'% element dmg · +'+8*l+'% duration',10],
+ ['ele','🔥','Elemental Studies','Fire Rate tree: +4% burn/chain/blast damage and +8% burn/chill/freeze duration per level (slow caps unchanged)',5,l=>3e5*Math.pow(2,l),l=>Math.min(48,24*(1+.25*l))*H_,l=>'+'+4*l+'% element dmg · +'+8*l+'% duration',10],
  ['war','🏆','War College','Each real Portal Raid win has a chance of +1 bonus trophy conquest (not from Head Start skipped gates)',3,l=>[2e6,8e6,2.5e7][l],l=>48*H_,l=>['—','15% chance','25% chance','35% chance'][l],10]
 ];
 const arbL=()=>Math.min(3,labL('arb')),trFree=()=>arbL()>=1?2:1,trResM=()=>arbL()>=2?.75:1.5,arbLink=()=>arbL()>=3?.02:0;
@@ -2026,7 +2026,7 @@ function labStatRows(row){const L=labS();let h='';const g=labPct('gy'),sh=labPct
 // ==== GATE MAGE (v18.58): 4th upgrade tree on the Gate pad + Castle Mage spellcaster
 TRE.gate={nm:'Gate Mage',ic:'🧙',lv:TRT,br:[['🔥','Battle Magic'],['🛡️','Wards'],['🔮','Arcane']],t:[
 [['mfb','Fireball','Spells explode: 50% splash damage, radius 22'],['mward','Ward Sigil','Each cast adds a gate shield of 2% max HP, up to 6% (wards fail below 10% gate HP)'],['mhex','Frost Hex','Spells slow 25% for 2.5s (bosses 10%)']],
-[['mchn','Chain Lightning','Spells arc to 3 more enemies for 50%'],['mmend','Mending Runes','Each cast repairs 1% of gate max HP (wards fail below 10% gate HP)'],['mweak','Hex of Weakness','Spell targets take +12% dmg from all sources for 4s (amp cap)']],
+[['mchn','Chain Lightning','Spells arc to 3 more enemies for 50%'],['mmend','Mending Runes','Each cast repairs 1% of gate max HP (wards fail below 10% gate HP)'],['mweak','Hex of Weakness','Spell targets take +12% dmg from all sources for 4s (stacks with all amps)']],
 [['mpyro','Pyromancy','+30% spell damage'],['mthorn','Thorn Ward','Up to 12 enemies at the gate take 10% spell damage every second'],['mquick','Quickened Runes','−25% spell cooldown']],
 [['mmet','Meteor','Every 4th cast calls a meteor: 200% damage r34, stuns 0.6s (not bosses)'],['maeg','Aegis','Gate takes −15% damage (shares the 50% gate cap)'],['mwarp','Time Warp','Every 4th cast: enemies within 100 of the gate are 30% slower for 3s (bosses 15%)']],
 [['msurge','Arcane Surge','Spells can crit with your crit chance and crit damage'],['mbless','Blessed Steel','Soldiers +25% damage; each cast heals soldiers 5%'],['mcoin','Conjured Coin','Non-bosses slain by spells drop +50% gold']],
