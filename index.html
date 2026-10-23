@@ -1715,10 +1715,11 @@ function trGateRed(n){let o=0;if(trN('barracks','hold')&&n>=4)o+=.25;if(trN('bar
 const TRST={};function ST_tr(k,n){TRST[k]=(TRST[k]||0)+(n||1)}
 // world overlay
 function trDrawW(){const s=st;if(!s||s.raid||!s.tr)return;const t=s.t,gf=GF();X.save();
- for(const e of s.en){if(e.hp<=0)continue;if(e._sl>0&&!(e.frU>t)){X.globalAlpha=.28;X.fillStyle='#7fe3ff';X.beginPath();X.ellipse(e.x,e.y,e.r+4,(e.r+4)*.55,0,0,TAU);X.fill();X.globalAlpha=.8;X.strokeStyle='#bff1ff';X.lineWidth=1.4;X.stroke()}
-  if(e.frU>t){X.globalAlpha=.5;X.fillStyle='#b3ecff';const w=e.r*2+4,h=e.r*2.7+4;X.fillRect(e.x-w/2,e.y-h,w,h);X.globalAlpha=.9;X.strokeStyle='#e6fbff';X.lineWidth=1;X.strokeRect(e.x-w/2,e.y-h,w,h)}
-  if(e.shU>t&&e.shN){X.globalAlpha=.9;X.fillStyle='#ff5252';const n=Math.ceil(e.shN/2);for(let i=0;i<n;i++){const x=e.x-(n-1)*2.2+i*4.4,y=e.y-e.r*2.6-9;X.beginPath();X.moveTo(x-1.6,y);X.lineTo(x+1.6,y);X.lineTo(x,y+2.2);X.fill()}}
-  if(e.mkU>t){X.globalAlpha=.85;X.strokeStyle='#ff3d3d';X.lineWidth=1.4;const r=e.r+7,a0=t*2;X.beginPath();X.arc(e.x,e.y-e.r,r,0,TAU);X.stroke();for(let i=0;i<4;i++){const a=a0+i*Math.PI/2;X.beginPath();X.moveTo(e.x+Math.cos(a)*(r-3),e.y-e.r+Math.sin(a)*(r-3));X.lineTo(e.x+Math.cos(a)*(r+3),e.y-e.r+Math.sin(a)*(r+3));X.stroke()}}}
+ for(const e of s.en){if(e.hp<=0)continue;const BB=isB(e.type)||e.boss;if(e._sl>0&&!(e.frU>t)){X.globalAlpha=BB?.1:.22;X.fillStyle='#7fe3ff';X.beginPath();X.ellipse(e.x,e.y,e.r+3,(e.r+3)*.5,0,0,TAU);X.fill();X.globalAlpha=BB?.45:.6;X.strokeStyle='#bff1ff';X.lineWidth=BB?.9:1.1;X.stroke()}
+  if(e.frU>t&&!BB){X.globalAlpha=.32;X.fillStyle='#b3ecff';const w=e.r*2+4,h=e.r*2.7+4;X.fillRect(e.x-w/2,e.y-h,w,h);X.globalAlpha=.9;X.strokeStyle='#e6fbff';X.lineWidth=1;X.strokeRect(e.x-w/2,e.y-h,w,h)}
+  let ix=e.x-e.r*(BB?1.35:1.1);const iy=e.y-e.r*(BB?.35:1.6);if(BB){if(e.mkU>t){X.globalAlpha=.8;X.strokeStyle='#ff5252';X.lineWidth=.8;X.beginPath();X.arc(ix,iy,2.6,0,TAU);X.moveTo(ix-4,iy);X.lineTo(ix-1.3,iy);X.moveTo(ix+1.3,iy);X.lineTo(ix+4,iy);X.moveTo(ix,iy-4);X.lineTo(ix,iy-1.3);X.moveTo(ix,iy+1.3);X.lineTo(ix,iy+4);X.stroke();ix-=9}if(e.gwU>t){X.globalAlpha=.8;X.fillStyle='#c47bff';X.beginPath();X.moveTo(ix,iy-2.8);X.lineTo(ix+2.2,iy);X.lineTo(ix,iy+2.8);X.lineTo(ix-2.2,iy);X.closePath();X.fill();ix-=7}}
+  if(e.shU>t&&e.shN){X.globalAlpha=.85;X.fillStyle='#ff5252';const n=Math.ceil(e.shN/2);for(let i=0;i<n;i++){const x=BB?ix-1-(i%3)*3.4:e.x-(n-1)*2.2+i*4.4,y=BB?iy-2+Math.floor(i/3)*3.2:e.y-e.r*2.6-9;X.beginPath();X.moveTo(x-1.6,y);X.lineTo(x+1.6,y);X.lineTo(x,y+2.2);X.fill()}}
+  if(e.mkU>t&&!BB){X.globalAlpha=.85;X.strokeStyle='#ff3d3d';X.lineWidth=1.4;const r=e.r+7,a0=t*2;X.beginPath();X.arc(e.x,e.y-e.r,r,0,TAU);X.stroke();for(let i=0;i<4;i++){const a=a0+i*Math.PI/2;X.beginPath();X.moveTo(e.x+Math.cos(a)*(r-3),e.y-e.r+Math.sin(a)*(r-3));X.lineTo(e.x+Math.cos(a)*(r+3),e.y-e.r+Math.sin(a)*(r+3));X.stroke()}}}
  for(const o of s.sol){if(o.ch){X.globalAlpha=.9;X.strokeStyle='#ffd740';X.lineWidth=1.5;X.beginPath();X.ellipse(o.x,o.y,8,4.4,0,0,TAU);X.stroke();X.fillStyle='#ffd740';const y=o.y-21;X.beginPath();X.moveTo(o.x-4,y);X.lineTo(o.x-4,y-4);X.lineTo(o.x-2,y-2);X.lineTo(o.x,y-5);X.lineTo(o.x+2,y-2);X.lineTo(o.x+4,y-4);X.lineTo(o.x+4,y);X.fill()}
   if(o.shU>t){X.globalAlpha=.35+.15*Math.sin(t*12);X.fillStyle='#9fe8ff';X.beginPath();X.arc(o.x,o.y-7,9,0,TAU);X.fill()}}
  for(const f of TRFX){const al=f.l/f.ml;X.globalAlpha=al;if(gf.gl)X.globalCompositeOperation='lighter';
@@ -1854,7 +1855,7 @@ function ptHint(){const s=st;if(!s||s.raid||!s.rPortal||state!=='play'||!WT)retu
  const sx=(P0.x*WT[0]+WT[2])/D,sy=((P0.y-20)*WT[1]+WT[3])/D,m=34,tp=150,bt=H-140;
  if(sx<m||sx>W-m||sy<tp||sy>bt){const cx=Math.max(m,Math.min(W-m,sx)),cy=Math.max(tp,Math.min(bt,sy)),an=Math.atan2(sy-cy||(sy-H/2),sx-cx||(sx-W/2));X.save();X.translate(cx,cy);X.rotate(an);X.globalAlpha=.75+.25*pu;X.fillStyle='#b388ff';X.strokeStyle='#fff';X.lineWidth=2.5;X.beginPath();X.moveTo(18+4*pu,0);X.lineTo(-10,-13);X.lineTo(-4,0);X.lineTo(-10,13);X.closePath();X.fill();X.stroke();X.restore();X.globalAlpha=1;txt('🌀',cx-Math.cos(an)*24,cy-Math.sin(an)*24,16,'#fff')}}
 {const _d=draw;draw=function(){const r=_d();try{ptHint()}catch(e){}return r}}
-{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.68';pn.appendChild(v)}}catch(e){}return r}}
+{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.69';pn.appendChild(v)}}catch(e){}return r}}
 // ==== FIRE RATE TREE combat (v18.53) — king arrows only; disabled in Portal Raids (trN false when s.raid)
 const FRR={sun:0,nova:0,vol:0,stc:0,th:0,fz:0,phx:0};
 function frOD(){return(st.rateX||1)*(trN('rate','overc')?1.1:1)}
@@ -2826,6 +2827,39 @@ function fixDecHTML(h){if(typeof h!=='string'||h.indexOf('.')<0||!DECT.test(h))r
 try{for(const a of ARM){const f=a[3];if(typeof f==='function')a[3]=l=>fixDec(String(f(l)))}}catch(e){}
 try{for(const a of LAB){for(const i of[3,5]){const f=a[i];if(typeof f==='function')a[i]=l=>fixDec(String(f(l)))}}}catch(e){}
 try{for(const a of ARTS){const f=a[4];if(typeof f==='function')a[4]=s=>fixDec(String(f(s)))}}catch(e){}
+
+// ---- v18.69 boss readability: opaque-only hit tint, damage numbers kept clear of HP bars, per-enemy number merge/cap
+// hit tint mask built from the sprite's solid pixels only (boss sprites carry a soft dark halo; tinting it made a red disc)
+redT=function(key,s){return spr(key+'_r2',s.w,s.h,s.ox,s.oy,g=>{g.drawImage(s.c,-s.ox,-s.oy,s.w,s.h);try{const c=g.canvas,id=g.getImageData(0,0,c.width,c.height),d=id.data;for(let i=0;i<d.length;i+=4){const a=d[i+3],k=a<150?0:a<230?(a-150)/80:1;d[i]=255;d[i+1]=42;d[i+2]=26;d[i+3]=Math.round(a*k)}g.putImageData(id,0,0)}catch(e){g.globalCompositeOperation='source-atop';g.fillStyle='#ff2a1a';g.fillRect(-s.ox,-s.oy,s.w,s.h)}},1)};
+hitA=function(e){if(!(e.fl>0))return 0;const n=performance.now();if(!e.htS||n-e.htS>320)e.htS=n;const d=n-e.htS,B=isB(e.type)||e.boss||e.cap;return d<(B?70:90)?Math.min(.3,(B?.14:.26)*(1-d/(B?70:90))):0};
+hitTint=function(e,key,sp,x,y,fl,sx,sy){const ha=hitA(e);if(!ha)return;const ga=X.globalAlpha;X.globalAlpha=Math.max(0,Math.min(.3,ga*ha));blit(redT(key,sp),x,y,fl,sx,sy);X.globalAlpha=ga};
+const BFX={e:null,hp0:0};const bfxBig=e=>!!(e&&(isB(e.type)||e.boss||e.cap));
+const bfxBarY=e=>e.y-(e.r||8)*3.4-2;const bfxFmt=v=>v<10&&v!==Math.round(v)?(Math.round(v*10)/10).toString():fN(v);
+{const _n=num;num=function(x,y,t,c,sz){const e=BFX.e;if(!e)return _n(x,y,t,c,sz);BFX.pend={t,c,s:sz||7}}}
+{const _h=hit;hit=function(e,d,cr,q){if(!e||!st)return _h(e,d,cr,q);const pe=BFX.e,pp=BFX.pend;BFX.e=e;BFX.pend=null;const hb0=Math.max(0,e.hp);let r,P=null;try{r=_h(e,d,cr,q)}finally{P=BFX.pend;BFX.e=pe;BFX.pend=pp}if(P)try{bfxNum(e,hb0-Math.max(0,e.hp),P,!!cr)}catch(x){}return r}}
+function bfxNum(e,dmg,P,cr){const s=st;if(!s||!s.nums)return;const big=bfxBig(e),now=s.t||0,cap=big?4:2,win=big?.2:.15;
+ const mine=s.nums.filter(n=>n.ow===e&&n.l>.25);let tgt=null;for(const n of mine)if(now-n.t0<win&&now-n.tb<.35&&(!tgt||n.t0>tgt.t0))tgt=n;
+ if(!tgt&&mine.length>=cap)tgt=mine.reduce((a,b)=>a.t0>b.t0?a:b);
+ if(tgt&&dmg>0){tgt.v+=dmg;tgt.cr=tgt.cr||cr;tgt.t=bfxFmt(tgt.v)+(tgt.cr?'!':'');if(tgt.cr){tgt.c='#ffd740';tgt.s=Math.max(tgt.s,9)}else tgt.s=Math.min(tgt.s0*1.35,tgt.s+.25);tgt.l=Math.max(tgt.l,.6);tgt.t0=now;return}
+ if(s.nums.length>=60)return;let x,y,minY=-1e9,vx=0;const R_=e.r||8;
+ if(big){e._dnS=((e._dnS||0)+1)%2;const side=e._dnS?1:-1;x=e.x+side*R_*(.9+Math.random()*.5);y=e.y-R_*(1.1+Math.random()*.6);vx=side*(8+Math.random()*6);minY=bfxBarY(e)+4+P.s*.7}
+ else{x=e.x+(Math.random()*6-3);y=e.y-R_*2.4-4}
+ s.nums.push({x,y,t:P.t,c:P.c,l:.9,s:P.s,s0:P.s,ow:e,v:dmg,cr,t0:now,tb:now,minY,vx,big})}
+// keep boss numbers below their bar (they drift sideways instead of rising through it)
+{const _u=upd;upd=function(dt){const r=_u(dt);const s=st;if(s&&s.nums)for(const n of s.nums){if(!n.big)continue;const e=n.ow;if(e&&e.hp>0){const m=bfxBarY(e)+4+n.s*.7;n.minY=m}n.x+=n.vx*dt;if(n.y<n.minY)n.y=n.minY}return r}}
+// boss over-head bar redrawn above the numbers, on a backing panel
+{const _d=trDrawW;trDrawW=function(){_d();try{const s=st;if(!s||s.raid||!OPT.hb)return;for(const e of s.en){if(e.hp<=0||!bfxBig(e)||!(e.hp<e.mhp||e.cap||e.boss))continue;const w=Math.max(10,e.r*2.6),y=bfxBarY(e);X.save();X.globalAlpha=.55;X.fillStyle='#120c08';rr(X,e.x-w/2-2,y-1.8,w+4,6.6,2.2);X.fill();X.restore();hbar(e.x,y,w,e.hp/e.mhp,isB(e.type)?'#ff1744':'#ff5252')}}catch(x){}}}
+
+// ---- v18.69 Run Setup: Head Start ON/OFF toggle (same storage as Settings: SK('kaHS') via hsOn())
+function rsHSBlock(){const R0=rset(),M=herMax(),on=hsOn(),av=M>1;
+ let h=`<div id="rsHSbox" style="margin:8px 0 6px"><button class="b ${on&&av?'g':'n'}" data-id="rsHS" style="font-size:15px;padding:10px;margin:4px 0">📯 Head Start: ${on?'ON':'OFF'}${on&&av?' — start at wave '+M:' — start at wave 1'}</button>`;
+ if(!av)h+=`<p style="font-size:12px;opacity:.8;margin:4px 0">No Head Start available yet (best wave ${herBase()}). It will apply once you have one.</p>`;
+ else if(on){const sk=M-1,g=Math.floor(sk/50);h+=`<p style="font-size:13px;margin:4px 0">Starts at wave <b>${M}</b>${R0.t>1?' (from this tier\'s best)':''}<br><span style="font-size:11px;opacity:.8">${herBrk()}</span></p>`;
+  if(g>0)h+=`<p style="font-size:12px;margin:4px 0;color:#ffe066">🌀 Skips ${g} gate${g>1?'s':''} (50–${g*50}): conquests granted without raiding. 🏆 Trophies & 💎 gem jackpots are held until 10 real waves are cleared.</p>`}
+ else h+=`<p style="font-size:12px;opacity:.8;margin:4px 0">Full run from wave 1${av?' (Head Start would be wave '+M+')':''}. Gates are raided normally.</p>`;
+ return h+'</div>'}
+{const _rs=runSetup;runSetup=function(){const r=_rs.apply(this,arguments);try{const ps=[...UI.querySelectorAll('.pn p')].filter(p=>/📯 Head Start/.test(p.textContent));if(ps.length){const d=document.createElement('div');d.innerHTML=rsHSBlock();ps[0].replaceWith(d.firstElementChild)}}catch(e){console.error(e)}return r}}
+UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.id!=='rsHS')return;e.stopImmediatePropagation();try{Snd.ui()}catch(x){}localStorage.setItem(SK('kaHS'),hsOn()?'0':'1');let sc=0;try{sc=(wrapUI(),scr()).scrollTop}catch(x){}runSetup();try{wrapUI();scr().scrollTop=sc}catch(x){}},true);
 
 // ---- v18.54 hit tint: replaces white flash; red, low alpha, max ~28% duty per enemy (real-time throttle, so 3x speed never means constant coverage)
 function redT(key,s){return spr(key+'_r',s.w,s.h,s.ox,s.oy,g=>{g.drawImage(s.c,-s.ox,-s.oy,s.w,s.h);g.globalCompositeOperation='source-atop';g.fillStyle='#ff2a1a';g.fillRect(-s.ox,-s.oy,s.w,s.h)},1)}
