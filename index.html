@@ -1855,7 +1855,7 @@ function ptHint(){const s=st;if(!s||s.raid||!s.rPortal||state!=='play'||!WT)retu
  const sx=(P0.x*WT[0]+WT[2])/D,sy=((P0.y-20)*WT[1]+WT[3])/D,m=34,tp=150,bt=H-140;
  if(sx<m||sx>W-m||sy<tp||sy>bt){const cx=Math.max(m,Math.min(W-m,sx)),cy=Math.max(tp,Math.min(bt,sy)),an=Math.atan2(sy-cy||(sy-H/2),sx-cx||(sx-W/2));X.save();X.translate(cx,cy);X.rotate(an);X.globalAlpha=.75+.25*pu;X.fillStyle='#b388ff';X.strokeStyle='#fff';X.lineWidth=2.5;X.beginPath();X.moveTo(18+4*pu,0);X.lineTo(-10,-13);X.lineTo(-4,0);X.lineTo(-10,13);X.closePath();X.fill();X.stroke();X.restore();X.globalAlpha=1;txt('🌀',cx-Math.cos(an)*24,cy-Math.sin(an)*24,16,'#fff')}}
 {const _d=draw;draw=function(){const r=_d();try{ptHint()}catch(e){}return r}}
-{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.69';pn.appendChild(v)}}catch(e){}return r}}
+{const _mn=menu;menu=function(...a){const r=_mn.apply(this,a);try{const pn=UI.querySelector('.pn');if(pn&&!pn.querySelector('.verlbl')){const v=document.createElement('div');v.className='verlbl';v.style.cssText='font-size:11px;opacity:.55;margin-top:6px';v.textContent='King Archer v18.70';pn.appendChild(v)}}catch(e){}return r}}
 // ==== FIRE RATE TREE combat (v18.53) — king arrows only; disabled in Portal Raids (trN false when s.raid)
 const FRR={sun:0,nova:0,vol:0,stc:0,th:0,fz:0,phx:0};
 function frOD(){return(st.rateX||1)*(trN('rate','overc')?1.1:1)}
@@ -2860,6 +2860,26 @@ function rsHSBlock(){const R0=rset(),M=herMax(),on=hsOn(),av=M>1;
  return h+'</div>'}
 {const _rs=runSetup;runSetup=function(){const r=_rs.apply(this,arguments);try{const ps=[...UI.querySelectorAll('.pn p')].filter(p=>/📯 Head Start/.test(p.textContent));if(ps.length){const d=document.createElement('div');d.innerHTML=rsHSBlock();ps[0].replaceWith(d.firstElementChild)}}catch(e){console.error(e)}return r}}
 UI.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.id!=='rsHS')return;e.stopImmediatePropagation();try{Snd.ui()}catch(x){}localStorage.setItem(SK('kaHS'),hsOn()?'0':'1');let sc=0;try{sc=(wrapUI(),scr()).scrollTop}catch(x){}runSetup();try{wrapUI();scr().scrollTop=sc}catch(x){}},true);
+
+// ---- v18.70 active curses visible during a run (HUD chip row + pause list) and "Gems earned this run" on the pause screen
+function curAct(s){s=s||st;if(!s||!s.mod)return[];return MODS.filter(x=>s.mod[x[0]])}
+function runGems(s){s=s||st;const o={pay:0,mult:1,bank:0,held:0,heldN:0};if(!s)return o;try{const g=gemsFor(s);o.pay=g.t||0;o.mult=(g.mm||1)*(g.lab||1)}catch(e){}
+ const sw=s.skipW||0;for(const r of(s.rdLog||[])){const [w,,rw,rv]=r;if(rw===1&&w>sw&&!(s.wsk&&s.wsk[w]))o.bank+=rv||0}
+ if(s.hsEsc>0){if(s.hsEscPaid)o.bank+=s.hsEsc;else{o.held+=s.hsEsc;o.heldN++}}
+ o.bank+=s.wyGem||0;for(const e of(s.wyEsc||[]))if(e.gem){o.held+=e.gem;o.heldN++}return o}
+{const _d=draw;draw=function(){_d.apply(this,arguments);try{const s=st;if(!s||s.raid||(state!=='play'&&state!=='pause'&&state!=='perk'))return;const C=curAct(s),T=s.tier||1;if(!C.length&&T<2)return;
+ X.save();X.setTransform(D,0,0,D,0,0);X.globalAlpha=1;const h=17,y=91,fs=11;let lab=(T>1?'⚜️'+T+' ':'')+(C.length?'☠️ '+C.map(x=>x[1]).join(''):'');const M=ASC.gem(T)*modMult(s.mod);lab+=' 💎×'+(Math.round(M*100)/100);
+ X.font='900 '+fs+'px '+FONT;const w=Math.ceil(X.measureText(lab).width)+14,x=W-10-w;X.fillStyle='rgba(12,9,5,.82)';rr(X,x,y,w,h,8);X.fill();X.strokeStyle='#b0002a';X.lineWidth=1.5;X.stroke();txt(lab,x+7,y+h/2+.5,fs,'#ffd6d6','left');X.restore();
+ if(Array.isArray(HB))HB.push({x:x-4,y:y-4,w:w+8,h:h+8,f:()=>pop(C.length?'☠️ '+C.map(c=>c[2]).join(' · '):'⚜️ Tier '+T,'#ff8a80')})}catch(e){}}}
+{const _rm=renderMenu;renderMenu=function(){_rm.apply(this,arguments);try{const s=st;if(!s||state!=='pause')return;const rb=UI.querySelector('[data-id="resume"]');if(!rb)return;
+ const G=runGems(s),tot=G.pay+G.bank,d=document.createElement('div');d.id='runGems';d.style.cssText='margin:0 0 8px;padding:7px 10px;border:2px solid #7fe3ff;border-radius:8px;background:#10222a;text-align:left';
+ d.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;font-weight:900"><span style="color:#b3ecff;font-size:14px">💎 Gems earned this run</span><span style="color:#7fe3ff;font-size:18px">${fD(tot)}</span></div>`+
+  `<div style="font-size:11px;opacity:.85;line-height:1.45">Run payout ${fD(G.pay)} (paid when the run ends${G.mult>1.0001?', incl. ×'+fD(G.mult)+' tier/curses/lab':''})${G.bank?' · jackpots banked '+fD(G.bank):''}</div>`+
+  (G.held?`<div style="font-size:11px;color:#e0a0ff;line-height:1.45">🔒 Held: ${fD(G.held)} more — unlocks after 10 real waves (forfeit if the run ends first)</div>`:'');
+ rb.after(d);
+ const C=curAct(s),T=s.tier||1;if(C.length||T>1){const pg=[...UI.querySelectorAll('div')].find(x=>/^🧭 Pad Levels/.test((x.firstElementChild&&x.firstElementChild.textContent)||''));const c=document.createElement('div');c.id='runCurses';c.style.cssText='margin:0 0 8px;padding:6px 10px;border:2px solid #b0002a;border-radius:8px;background:#2a1014;text-align:left';
+  c.innerHTML=`<div style="font-weight:900;color:#ff8a80;font-size:14px;margin-bottom:2px">☠️ Active Curses${T>1?' · ⚜️ Tier '+T:''} <span style="color:#b9f6ca;font-size:12px">gems ×${fD(ASC.gem(T)*modMult(s.mod))}</span></div>`+(C.length?C.map(x=>`<div style="font-size:12px;line-height:1.5">${x[1]} <b>${x[2]}</b> — ${x[3]} <span style="color:#b9f6ca">+${Math.round(x[4]*100)}% gems</span></div>`).join(''):'<div style="font-size:12px;opacity:.8">No curses this run</div>');
+  (pg||d).after(c)}}catch(e){console.error(e)}}}
 
 // ---- v18.54 hit tint: replaces white flash; red, low alpha, max ~28% duty per enemy (real-time throttle, so 3x speed never means constant coverage)
 function redT(key,s){return spr(key+'_r',s.w,s.h,s.ox,s.oy,g=>{g.drawImage(s.c,-s.ox,-s.oy,s.w,s.h);g.globalCompositeOperation='source-atop';g.fillStyle='#ff2a1a';g.fillRect(-s.ox,-s.oy,s.w,s.h)},1)}
