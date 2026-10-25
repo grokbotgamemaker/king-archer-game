@@ -177,7 +177,7 @@ let ASORT={k:'name',d:1};try{Object.assign(ASORT,JSON.parse(localStorage.getItem
 function sortBar(){const b=(k,l)=>`<button class="sb ${ASORT.k===k?'on':''}" data-asort="${k}">${l}</button>`;return`<div class="sortbar">Sort: ${b('name','Name')}${b('lv','Level')}${b('cost','Cost')}<button class="sb on" data-adir="1" aria-label="Toggle order">${ASORT.d>0?'▲ Asc':'▼ Desc'}</button></div>`}
 const aKey=a=>ASORT.k==='lv'?mlR(a[0]):ASORT.k==='cost'?(mlR(a[0])>=a[4]?Infinity:armCost(a)):0;
 function armGroups(rowFn){const by=k=>ARM.find(a=>a[0]===k),srt=l=>l.filter(Boolean).sort((a,b)=>{const d=ASORT.k==='name'?0:aKey(a)-aKey(b);return ASORT.d*((d>0?1:d<0?-1:0)||a[2].localeCompare(b[2]))}),hd=(id,l,n)=>`<button class="tab" data-asec="${id}" style="display:block;width:100%;margin:8px 0 4px;text-align:left;font-size:16px">${ASEC[id]?'▾':'▸'} ${l} <span style="opacity:.75">(${n})</span></button>`;let h='';const fav=srt(FAV.map(by));if(fav.length)h+=hd('fav','⭐ Favorites',fav.length)+(ASEC.fav?fav.map(rowFn).join(''):'');const seen=new Set(ACAT.flatMap(c=>c[2]));const rest=ARM.filter(a=>!seen.has(a[0])).map(a=>a[0]);ACAT.map((c,i)=>i===ACAT.length-1?[c[0],c[1],c[2].concat(rest)]:c).forEach(([id,l,ks])=>{const arr=srt(ks.map(by).filter(a=>a&&!FAV.includes(a[0])));if(!arr.length)return;h+=hd(id,l,arr.length)+(ASEC[id]?arr.map(rowFn).join(''):'')});return h}
-const ARMX={sg:1,gm:.5,hp:.5,dmg:.15,cd:.3,gg:.25,wh:.4,so:.4,eng:.3,med:.3,crit:1},ARMC=1000,ARMG=1.006,armE=(k,l)=>l<=100||!ARMX[k]?l:k==='crit'?EYE(l):100+100*ARMX[k]*Math.log(1+(l-100)/100);ARM.forEach(a=>{if(ARMX[a[0]]){a[4]=ARMC;const f=a[3];a[3]=l=>f(Math.round(armE(a[0],l)*10)/10)}});const mlR=k=>(meta.up[k]|0)||0,ml=k=>armE(k,mlR(k)),armCost=a=>{const l=mlR(a[0]);return Math.round((a[5]*Math.pow(l+1,1.3)+l*l*(a[0]==='crit'&&l>=100?EYEQ:.15))*(l>=100?Math.pow(a[0]==='crit'?EYEG:ARMG,l-100):1))};
+const ARMX={sg:1,gm:.5,hp:.5,dmg:.15,cd:.3,gg:.25,wh:.4,so:.4,eng:.3,med:.3,crit:1},ARMC=1000,ARMG=1.006,armE=(k,l)=>l<=100||!ARMX[k]?l:k==='crit'?EYE(l):100+100*ARMX[k]*Math.log(1+(l-100)/100);ARM.forEach(a=>{if(ARMX[a[0]]){a[4]=ARMC;const f=a[3];a[3]=l=>f(Math.round(armE(a[0],l)*10)/10)}});const mlR=k=>(meta.up[k]|0)||0,ml=k=>armE(k,mlR(k)),armCost=a=>{const l=mlR(a[0]);return Math.round((a[5]*Math.pow(l+1,1.3)+(a[0]==='crit'&&l>=100?1500:l*l*.15))*(l>=100?Math.pow(a[0]==='crit'?EYEG:ARMG,l-100):1))};
 let best=+(localStorage.getItem(SK('kaBestC'))||0),st=null,state='menu';
 const keys={};addEventListener('keydown',e=>keys[e.key.toLowerCase()]=1);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=0);
 const JR=55;let joy=null;
@@ -2883,8 +2883,8 @@ function runGems(s){s=s||st;const o={pay:0,mult:1,bank:0,held:0,heldN:0};if(!s)r
 
 // ---- v18.71 tiered crits (compounding). M = crit damage multiplier. Crit chance p may exceed 100% (capped 300%).
 // 0-100%: p chance of a YELLOW crit (×M). 100-200%: every hit crits, (p-100%) chance of ORANGE super crit (×M²). 200-300%: every hit at least orange, (p-200%) chance of RED mega crit (×M³).
-// Eagle Eye past lv100: crit% = 50 + EYEA·x^EYEP, x=(lv-100)/900 (lv1000 = 50+EYEA %); cost ×EYEG per level past 100
-var EYEA=250,EYEP=.9,EYEG=1.001,EYEQ=0;function EYE(l){return 100+2*EYEA*Math.pow(Math.max(0,l-100)/900,EYEP)}
+// Eagle Eye past lv100: crit% = 50 + EYEA·x^EYEP, x=(lv-100)/900 (lv1000 = 50+EYEA %); cost = (10·(lv+1)^1.3 + 1500)·EYEG^(lv-100) past 100 (continuous with the old curve at 100)
+var EYEA=250,EYEP=.9,EYEG=1.001;function EYE(l){return 100+2*EYEA*Math.pow(Math.max(0,l-100)/900,EYEP)}
 const CRCOL=['#fff','#ffd740','#ff9100','#ff1744'],CRSZ=[6.5,9,10,11.5];
 function critRoll(p){p=Math.min(3,Math.max(0,p||0));if(p<=1)return R()<p?1:0;if(p<=2)return R()<p-1?2:1;return R()<p-2?3:2}
 function critEV(p,M){p=Math.min(3,Math.max(0,p||0));if(p<=1)return 1+p*(M-1);if(p<=2)return M+(p-1)*(M*M-M);return M*M+(p-2)*(M*M*M-M*M)}
